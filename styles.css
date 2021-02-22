@@ -1,0 +1,52 @@
+:root {
+  --pixel-size-skew: 24px;
+  --pixel-guide-size: calc(var(--pixel-size-skew) - 2px);
+  --pixel-art-height: 16;
+  --pixel-art-width: 16;
+}
+
+body {
+  height: max-content;
+}
+
+/*Class Styles*/
+
+.lr-centered {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/*ID Styles*/
+
+#art-section {
+  /* background-image: url(Transparency500.png); */
+  background-color: black;
+  background-repeat: repeat;
+  height: 500px;
+}
+
+#canvas-holder {
+  /*Border Styles*/
+  
+
+  /*Size Styles*/
+  width: calc(var(--pixel-size-skew) * var(--pixel-art-width));
+  height: calc(var(--pixel-size-skew) * var(--pixel-art-height));
+  position: fixed;
+}
+
+#pixel-canvas {
+  width: inherit;
+  height: inherit;
+  background-color: white;
+}
+
+#pixel-guide {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--pixel-guide-size); 
+  height: var(--pixel-guide-size);
+  border: 1px solid rgba(255, 0, 0, .5);
+}
