@@ -9,7 +9,9 @@ body {
   height: max-content;
 }
 
-/*Class Styles*/
+/*
+  Class Styles
+*/
 
 .lr-centered {
   margin-left: auto;
@@ -17,23 +19,37 @@ body {
   display: block;
 }
 
-/*ID Styles*/
+/*
+  ID Styles
+*/
+
+#trifold-holder {
+  display: flex;
+  flex-direction: row;
+}
+
+#color-section {
+  flex: 1;
+}
 
 #art-section {
   /* background-image: url(Transparency500.png); */
   background-color: black;
   background-repeat: repeat;
   height: 500px;
+  position: relative;
+  flex: 1;
 }
 
 #canvas-holder {
-  /*Border Styles*/
-  
+  /*Location Styles*/
+  position: absolute;
+  top: 15px;
+  left: 15px;
 
   /*Size Styles*/
   width: calc(var(--pixel-size-skew) * var(--pixel-art-width));
   height: calc(var(--pixel-size-skew) * var(--pixel-art-height));
-  position: fixed;
 }
 
 #pixel-canvas {
@@ -46,7 +62,11 @@ body {
   position: absolute;
   left: 0;
   top: 0;
-  width: var(--pixel-guide-size); 
+  width: var(--pixel-guide-size);
   height: var(--pixel-guide-size);
-  border: 1px solid rgba(255, 0, 0, .5);
+  border: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+#tileset-section {
+  flex: 1;
 }

@@ -20,8 +20,8 @@ canvas_holder.addEventListener("mouseleave", e => {
 });
 
 canvas_holder.addEventListener("mousemove", e => {
-    mouseX = e.clientX - 10;
-    mouseY = e.clientY - 10;
+    mouseX = e.clientX - pixel_canvas.getBoundingClientRect().left;
+    mouseY = e.clientY - pixel_canvas.getBoundingClientRect().top;
 
     holdX = mouseX / pixelSizeSkew;
     holdY = mouseY / pixelSizeSkew;

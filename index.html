@@ -6,13 +6,23 @@
 </head>
 
 <body>
+  <div id="control-head">
+    <select name="target-console" id="target-console-select">
+      <option value="NES">Nintendo Entertainment System</option>
+      <option value="Game Boy">Nintendo Gameboy</option>
+      <option value="SNES">Super Nintendo Entertainment System</option>
+      <option value="NES">Nintendo Game Boy Color</option>
+    </select>
+  </div>
   <div id="trifold-holder">
+    <div id="color-section"></div>
     <div id="art-section">
       <div id="canvas-holder" class="lr-centered">
         <canvas id="pixel-canvas" class="lr-centered"> </canvas>
         <div id="pixel-guide"></div>
       </div>
     </div>
+    <div id="tileset-section"></div>
   </div>
 </body>
 
