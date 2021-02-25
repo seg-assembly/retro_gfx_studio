@@ -28,13 +28,14 @@ body {
 */
 #control-head {
   flex: 1;
+  margin: 5px;
 }
 
 #trifold-holder {
   display: flex;
   flex-direction: row;
   height: auto;
-  flex: 9;
+  flex: 14;
 }
 
 #color-section {
