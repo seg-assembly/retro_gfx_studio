@@ -7,6 +7,7 @@
 
 body {
   height: max-content;
+  margin: 0;
 }
 
 /*
@@ -22,23 +23,26 @@ body {
 /*
   ID Styles
 */
+#control-head {
+  height: 3vh;
+}
 
 #trifold-holder {
   display: flex;
   flex-direction: row;
+  height: 97vh;
 }
 
 #color-section {
   flex: 1;
+  background-color: aquamarine;
 }
 
 #art-section {
-  /* background-image: url(Transparency500.png); */
-  background-color: black;
+  background-image: url(Transparency.png);
   background-repeat: repeat;
-  height: 500px;
   position: relative;
-  flex: 1;
+  flex: 3;
 }
 
 #canvas-holder {
@@ -69,4 +73,5 @@ body {
 
 #tileset-section {
   flex: 1;
+  background-color: darksalmon;
 }
