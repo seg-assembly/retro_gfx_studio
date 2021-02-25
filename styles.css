@@ -8,6 +8,9 @@
 body {
   height: max-content;
   margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /*
@@ -24,13 +27,14 @@ body {
   ID Styles
 */
 #control-head {
-  height: 3vh;
+  flex: 1;
 }
 
 #trifold-holder {
   display: flex;
   flex-direction: row;
-  height: 97vh;
+  height: auto;
+  flex: 9;
 }
 
 #color-section {

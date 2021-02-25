@@ -32,19 +32,3 @@ canvas_holder.addEventListener("mousemove", e => {
     pixel_guide.style.left = pixelGuideLeftPosition + "px";
     pixel_guide.style.top = pixelGuideTopPosition + "px";
 });
-
-canvas_holder.addEventListener("mousedown", e => {
-    printVars();
-})
-
-
-/*
-    Functions 
-*/
-
-function printVars() {
-    console.log("mouseX: " + mouseX);
-    console.log("mouseY: " + mouseY);
-    console.log("pixelGuideLeftPosition: " + pixelGuideLeftPosition);
-    console.log("pixelGuideTopPosition: " + pixelGuideTopPosition);
-}
