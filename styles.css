@@ -23,12 +23,35 @@ body {
   display: block;
 }
 
+.header-button{
+  font-size: 12pt;
+}
+
+.modal-content-box{
+  border-radius: 1%;
+  background-color: white;
+  margin: 9rem;
+  padding: 1rem;
+}
+
 /*
   ID Styles
 */
+#modal-holder {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 #control-head {
   flex: 1;
   margin: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 #trifold-holder {

@@ -6,13 +6,13 @@
 </head>
 
 <body>
+  <div id="modal-holder">
+    <div id="modal-content-new" class="modal-content-box">
+      <h1>New...</h1>
+    </div>
+  </div>
   <div id="control-head">
-    <select name="target-console" id="target-console-select">
-      <option value="NES">Nintendo Entertainment System</option>
-      <option value="Game Boy">Nintendo Gameboy</option>
-      <option value="SNES">Super Nintendo Entertainment System</option>
-      <option value="NES">Nintendo Game Boy Color</option>
-    </select>
+    <button id="new-button" class="header-button" onclick="openNewHeader()">New...</button>
   </div>
   <div id="trifold-holder">
     <div id="color-section"></div>
@@ -33,6 +33,7 @@
 
   <!--Scripts-->
   <script src="scripts/global_values.js"></script>
+  <script src="scripts/control_head_scripts.js"></script>
   <script src="scripts/pixle_guide_scripts.js"></script>
   <script src="scripts/art_section_scripts.js"></script>
 </body>
