@@ -8,11 +8,24 @@
 <body>
   <div id="modal-holder">
     <div id="modal-content-new" class="modal-content-box">
-      <h1>New...</h1>
+      <div id="new-header-holder">
+        <h1>New Project</h1>
+        <a id="modal-close" href="#" onclick="closeHeader()">Close</a>
+      </div>
+      <h2>System</h2>
+      <div id="systems-grid" class="grid-container">
+        <div class="console-card">
+          <p class="console-card-title-text">
+            Nintendo Entertainment System/Famicom
+          </p>
+        </div>
+      </div>
     </div>
   </div>
   <div id="control-head">
-    <button id="new-button" class="header-button" onclick="openNewHeader()">New...</button>
+    <button id="new-button" class="header-button" onclick="openNewHeader()">
+      New...
+    </button>
   </div>
   <div id="trifold-holder">
     <div id="color-section"></div>
@@ -34,6 +47,7 @@
   <!--Scripts-->
   <script src="scripts/global_values.js"></script>
   <script src="scripts/control_head_scripts.js"></script>
+  <script src="scripts/modal_content_scripts.js"></script>
   <script src="scripts/pixle_guide_scripts.js"></script>
   <script src="scripts/art_section_scripts.js"></script>
 </body>

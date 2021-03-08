@@ -5,6 +5,7 @@ let canvas_holder = document.getElementById("canvas-holder");
 let pixel_canvas = document.getElementById("pixel-canvas");
 let new_button = document.getElementById("new-button");
 let modal_holder = document.getElementById("modal-holder");
+let modal_close = document.getElementById("modal-close");
 
 //jQuery HTMLElements 
 //let pixel_guide = $("#pixel-guide");
