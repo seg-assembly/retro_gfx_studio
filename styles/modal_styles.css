@@ -1,0 +1,28 @@
+/*
+    Class Styles 
+*/
+.modal-content-box {
+  border-radius: 1rem;
+  background-color: white;
+  padding: 1rem;
+  width: 70%;
+  height: 70%;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/*
+    ID Styles 
+*/
+#modal-holder {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }

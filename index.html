@@ -2,15 +2,21 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="styles.css" />
+
+  <!--Styles-->
+  <link rel="stylesheet" href="styles/generic_styles.css"/>
+  <link rel="stylesheet" href="styles/styles.css" />
+  <link rel="stylesheet" href="styles/modal_styles.css"/>
 </head>
 
 <body>
-  <div id="modal-holder">
+  <div id="modal-holder" class="centered">
     <div id="modal-content-new" class="modal-content-box">
       <div id="new-header-holder">
-        <h1>New Project</h1>
-        <a id="modal-close" href="#" onclick="closeHeader()">Close</a>
+        <div id="new-modal-header" class="header-bar">
+          <h1>New Project</h1>
+          <a class="modal-close" href="#" onclick="closeHeader()">Close</a>
+        </div>
       </div>
       <h2>System</h2>
       <div id="systems-grid" class="grid-container">
@@ -30,8 +36,8 @@
   <div id="trifold-holder">
     <div id="color-section"></div>
     <div id="art-section">
-      <div id="canvas-holder" class="lr-centered">
-        <canvas id="pixel-canvas" class="lr-centered"> </canvas>
+      <div id="canvas-holder">
+        <canvas id="pixel-canvas"> </canvas>
         <div id="pixel-guide"></div>
       </div>
     </div>

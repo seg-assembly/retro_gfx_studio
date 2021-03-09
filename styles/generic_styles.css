@@ -1,0 +1,33 @@
+/*
+  Element Styles 
+*/
+:root {
+    --pixel-size-skew: 24px;
+    --pixel-guide-size: calc(var(--pixel-size-skew) - 2px);
+    --pixel-art-height: 16;
+    --pixel-art-width: 16;
+  }
+  
+  body {
+    height: max-content;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+/*
+Class Styles
+  */
+.header-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
