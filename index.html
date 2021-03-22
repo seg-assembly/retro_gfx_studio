@@ -6,6 +6,8 @@
   <!--Libraries-->
   <script src="scripts/libraries/jquery-3.5.1.js"></script>
 
+  <script src="scripts/init.js"></script>
+
   <!--Classes-->
   <script src="scripts/classes/color_class.js"></script>
 
@@ -13,6 +15,7 @@
   <link rel="stylesheet" href="styles/generic_styles.css" />
   <link rel="stylesheet" href="styles/styles.css" />
   <link rel="stylesheet" href="styles/modal_styles.css" />
+  <link rel="stylesheet" href="styles/nes_color_picker.css" />
 </head>
 
 <body>
@@ -23,7 +26,7 @@
         <a class="modal-close" href="#" onclick="closeHeader()">Close</a>
       </div>
       <h2 class="modal-tight">Project Name</h2>
-      <input type="text" placeholder="Project Name">
+      <input type="text" placeholder="Project Name" />
       <h2>System</h2>
       <select id="console-select" name="console" class="modal-tight">
         <option value="" selected disabled hidden>Choose Console</option>
@@ -34,7 +37,9 @@
         <option value="Game Boy" disabled>Game Boy</option>
         <option value="Game Boy Color" disabled>Game Boy Color</option>
       </select>
-      <button id="create-project-button" class="modal-tight">Create Project</button>
+      <button id="create-project-button" class="modal-tight">
+        Create Project
+      </button>
     </div>
   </div>
   <div id="control-head">
@@ -44,10 +49,8 @@
   </div>
   <div id="trifold-holder">
     <div id="color-section">
-      <div id="nes-color-picker">
-        <button onclick="changeActiveColor(255, 255, 255)">Black</button>
-        <button>White</button>
-      </div>
+      <div id="color-palette-holder"></div>
+      <div id="nes-color-picker"></div>
       <div id="gb-color-picker"></div>
       <div id="snes-color-picker"></div>
       <div id="gbc-color-picker"></div>
@@ -65,7 +68,7 @@
   <script src="scripts/document_elements.js"></script>
 
   <!--Scripts-->
-  <script src="init.js"></script>
+
   <script src="scripts/global_values.js"></script>
   <script src="scripts/control_head_scripts.js"></script>
   <script src="scripts/modal_content_scripts.js"></script>
