@@ -1,0 +1,24 @@
+{
+  "name": "retro_gfx_studio",
+  "version": "1.0.0",
+  "description": "This is the web prototype of Retro Graphics Studio, the end product will be packaged for the desktop with electron.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seg-assembly/retro_gfx_studio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seg-assembly/retro_gfx_studio/issues"
+  },
+  "homepage": "https://github.com/seg-assembly/retro_gfx_studio#readme",
+  "devDependencies": {
+    "electron": "^12.0.1"
+  }
+}
