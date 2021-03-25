@@ -2,7 +2,11 @@
     Classes 
 */
 class project {
-    constructor(name) {
+    name : string;
+    projectConsole : gameConsole;
+    projectColorPalettes : colorPalette[];
+
+    constructor(name : string) {
         this.name = name;
         this.projectConsole; 
         this.projectColorPalettes = [];
@@ -11,6 +15,10 @@ class project {
 }
 
 class color {
+    red : number;
+    green : number;
+    blue : number;
+
     constructor() {
         this.red;
         this.green;
@@ -25,6 +33,9 @@ class color {
 }
 
 class colorPalette {
+    name : string;
+    colors : color[]
+
     constructor() {
         this.name;
         this.colors = [];
@@ -32,13 +43,16 @@ class colorPalette {
 }
 
 class gameConsole {
+    name : string;
+    colorPaletteLimit : number;
+
     constructor(name, colorPaletteLimit) {
         this.name = name;
         this.colorPaletteLimit = colorPaletteLimit;
     }
 }
 
-const consoleList = gameConsole[
+const consoleList : gameConsole[] = [
     {
         name: "NES",
         colorPaletteLimit: 4
@@ -65,21 +79,22 @@ let pixel_canvas = document.getElementById("pixel-canvas");
 let new_button = document.getElementById("new-button");
 let modal_holder = document.getElementById("modal-holder");
 let modal_close = document.getElementById("modal-close");
+let color_palette_holder = document.getElementById("color_palette_holder");
 
 /*
-    Variables 
+    Working Variables 
 */
-var mouseX;
-var mouseY;
-var pixelSizeSkew = 24;
-var pixelArtHeight;
-var pixelArtWidth;
-var canvasHolderLeft;
-var canvasHolderTop; 
-var pixelGuideLeftPosition;
-var pixelGuideTopPosition;
-var chosenColor;
-var workingProject;
+var mouseX : number;
+var mouseY : number;
+var pixelSizeSkew : number = 24;
+var pixelArtHeight : number;
+var pixelArtWidth : number;
+var canvasHolderLeft : number;
+var canvasHolderTop : number; 
+var pixelGuideLeftPosition : number;
+var pixelGuideTopPosition : number;
+var chosenColor : color;
+var workingProject : project;
 
 /*
     Init 
@@ -105,15 +120,9 @@ function closeHeader() {
 }
 
 function addColorPalette() {
-    console.log("Hello!");
-}
-
-function setWorkingProject(passProject) {
-    if(passProject instanceof project) {
-        workingProject = passProject;
-    } else {
-        console.error("Object passed to 'setWorkingProject' is not a project object")
+    if(workingProject != null) {
     }
+
 }
 
 /*
@@ -131,11 +140,8 @@ canvas_holder.addEventListener("mousemove", e => {
     mouseX = e.clientX - pixel_canvas.getBoundingClientRect().left;
     mouseY = e.clientY - pixel_canvas.getBoundingClientRect().top;
 
-    holdX = mouseX / pixelSizeSkew;
-    holdY = mouseY / pixelSizeSkew;
-
-    pixelGuideLeftPosition = Math.floor(holdX) * pixelSizeSkew;
-    pixelGuideTopPosition = Math.floor(holdY) * pixelSizeSkew;
+    pixelGuideLeftPosition = Math.floor(mouseX / pixelSizeSkew) * pixelSizeSkew;
+    pixelGuideTopPosition = Math.floor(mouseY / pixelSizeSkew) * pixelSizeSkew;
 
     pixel_guide.style.left = pixelGuideLeftPosition + "px";
     pixel_guide.style.top = pixelGuideTopPosition + "px";
