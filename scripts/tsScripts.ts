@@ -120,9 +120,7 @@ function closeHeader() {
 }
 
 function addColorPalette() {
-    if(workingProject != null) {
-    }
-
+    
 }
 
 /*

@@ -1,3 +1,17 @@
+#color-section {
+    display: flex;
+    flex-direction: column;
+}
+
 #add-color-palette-button {
     float: right;
+}
+
+.color-palette-box {
+    background-color: coral;
+    height: 50px;
+}
+
+.color-palette-grid {
+    display: flex;
 }
