@@ -1,32 +1,39 @@
+import * as electron from 'electron';
+import * as path from 'path';
+import * as fs from 'fs';
+const dialog = electron.remote.dialog;
+
 /*
     Classes 
 */
 class project {
-    name : string;
-    projectConsole : gameConsole;
-    projectColorPalettes : colorPalette[];
-    projectTiles : tile[];
+    name: string;
+    projectConsole: gameConsole;
+    projectColorPalettes: colorPalette[];
+    projectTiles: tile[];
+    newProject: boolean;
 
-    constructor(name : string, projectConsole : gameConsole) {
+    constructor(name: string, projectConsole: gameConsole) {
         this.name = name;
-        this.projectConsole = projectConsole; 
+        this.projectConsole = projectConsole;
         this.projectColorPalettes = [];
         this.projectTiles = [];
+        this.newProject = true;
     }
 }
 
 class tile {
-    imageUrl : string;
+    imageUrl: string;
 
-    constructor(imageUrl : string) {
+    constructor(imageUrl: string) {
         this.imageUrl = imageUrl;
     }
 }
 
 class color {
-    red : number;
-    green : number;
-    blue : number;
+    red: number;
+    green: number;
+    blue: number;
 
     constructor() {
         this.red;
@@ -34,7 +41,7 @@ class color {
         this.blue;
     }
 
-    setColor(r, g, b){
+    setColor(r, g, b) {
         this.red = r;
         this.green = g;
         this.blue = b;
@@ -42,8 +49,8 @@ class color {
 }
 
 class colorPalette {
-    name : string;
-    colors : color[]
+    name: string;
+    colors: color[]
 
     constructor() {
         this.name;
@@ -52,8 +59,8 @@ class colorPalette {
 }
 
 class gameConsole {
-    name : string;
-    colorPaletteLimit : number;
+    name: string;
+    colorPaletteLimit: number;
 
     constructor(name, colorPaletteLimit) {
         this.name = name;
@@ -61,7 +68,7 @@ class gameConsole {
     }
 }
 
-const consoleList : gameConsole[] = [
+const consoleList: gameConsole[] = [
     {
         name: "NES",
         colorPaletteLimit: 4
@@ -95,22 +102,22 @@ let console_select = <HTMLSelectElement>document.getElementById("console-select"
 /*
     Working Variables 
 */
-var mouseX : number;
-var mouseY : number;
-var pixelSizeSkew : number = 24;
-var pixelArtHeight : number;
-var pixelArtWidth : number;
-var canvasHolderLeft : number;
-var canvasHolderTop : number; 
-var pixelGuideLeftPosition : number;
-var pixelGuideTopPosition : number;
-var chosenColor : color;
-var workingProject : project;
+var mouseX: number;
+var mouseY: number;
+var pixelSizeSkew: number = 24;
+var pixelArtHeight: number;
+var pixelArtWidth: number;
+var canvasHolderLeft: number;
+var canvasHolderTop: number;
+var pixelGuideLeftPosition: number;
+var pixelGuideTopPosition: number;
+var chosenColor: color;
+var workingProject: project;
 
 /*
     Init 
 */
-jQuery(function() {
+jQuery(function () {
     chosenColor = new color();
     changeActiveColor(5, 5, 5);
     console.log(consoleList);
@@ -133,12 +140,12 @@ function closeHeader() {
 }
 
 function addColorPalette() {
-    
+
 }
 
 function createProject() {
-    var tempProjectName : string = new_project_name_input.value;
-    var tempProjectConsole : gameConsole;
+    var tempProjectName: string = new_project_name_input.value;
+    var tempProjectConsole: gameConsole;
 
     switch (console_select.selectedIndex) {
         case 1:
@@ -158,12 +165,30 @@ function createProject() {
             break;
     }
 
-    var tempProject : project = new project(tempProjectName, tempProjectConsole);
+    var tempProject: project = new project(tempProjectName, tempProjectConsole);
     console.log(tempProject);
 
     closeHeader();
     workingProject = tempProject;
     console.log(workingProject);
+}
+
+function saveProject() {
+    if (workingProject.newProject == true) {
+        dialog.showSaveDialog({
+            title: "Save project where...",
+            defaultPath: __dirname, 
+            buttonLabel: "Save",
+            filters: [{
+                name: "Retro Graphics Studio Projects",
+                extensions: [".rgsproj"],
+            }],
+            properties: [
+                'createDirectory'
+            ]
+        })
+    }
+
 }
 
 /*

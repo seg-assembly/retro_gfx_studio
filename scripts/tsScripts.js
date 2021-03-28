@@ -1,3 +1,7 @@
+"use strict";
+exports.__esModule = true;
+var electron = require("electron");
+var dialog = electron.remote.dialog;
 /*
     Classes
 */
@@ -7,6 +11,7 @@ var project = /** @class */ (function () {
         this.projectConsole = projectConsole;
         this.projectColorPalettes = [];
         this.projectTiles = [];
+        this.newProject = true;
     }
     return project;
 }());
@@ -134,6 +139,22 @@ function createProject() {
     closeHeader();
     workingProject = tempProject;
     console.log(workingProject);
+}
+function saveProject() {
+    if (workingProject.newProject == true) {
+        dialog.showSaveDialog({
+            title: "Save project where...",
+            defaultPath: __dirname,
+            buttonLabel: "Save",
+            filters: [{
+                    name: "Retro Graphics Studio Projects",
+                    extensions: [".rgsproj"]
+                }],
+            properties: [
+                'createDirectory'
+            ]
+        });
+    }
 }
 /*
     Event Listeners

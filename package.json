@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "run": "npm run compileTSC && electron .",
+    "run no Compile": "electron .",
     "compileTSC": "cd scripts && tsc tsScripts.ts"
   },
   "repository": {
