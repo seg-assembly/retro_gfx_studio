@@ -16,8 +16,11 @@
 
 <body>
   <div id="template-holder" style="display: none;">
-    <template class="color-palette-box">
-
+    <template class="color-palette-template">
+      <div class="color-palette-box">
+        <input type="text" class="color-palette-name" placeholder="Palette #"></input>
+        <div class="color-palette-grid"></div>
+      </div>
     </template>
   </div>
   <div id="modal-holder" class="centered">
@@ -27,7 +30,7 @@
         <a class="modal-close" href="#" onclick="closeHeader()">Close</a>
       </div>
       <h2 class="modal-tight">Project Name</h2>
-      <input type="text" placeholder="Project Name" />
+      <input id="new-project-name-input" type="text" placeholder="Project Name" />
       <h2>System</h2>
       <select id="console-select" name="console" class="modal-tight">
         <option value="" selected disabled hidden>Choose Console</option>
@@ -38,7 +41,7 @@
         <option value="Game Boy" disabled>Game Boy</option>
         <option value="Game Boy Color" disabled>Game Boy Color</option>
       </select>
-      <button id="create-project-button" class="modal-tight">
+      <button id="create-project-button" class="modal-tight" onclick="createProject()">
         Create Project
       </button>
     </div>
@@ -46,6 +49,9 @@
   <div id="control-head">
     <button id="new-button" class="header-button" onclick="openNewHeader()">
       New...
+    </button>
+    <button id="save-button" class="header-button" onclick="saveProject()">
+      Save Project
     </button>
   </div>
   <div id="trifold-holder">

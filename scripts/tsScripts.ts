@@ -5,12 +5,21 @@ class project {
     name : string;
     projectConsole : gameConsole;
     projectColorPalettes : colorPalette[];
+    projectTiles : tile[];
 
-    constructor(name : string) {
+    constructor(name : string, projectConsole : gameConsole) {
         this.name = name;
-        this.projectConsole; 
+        this.projectConsole = projectConsole; 
         this.projectColorPalettes = [];
-        //Collection of Tiles 
+        this.projectTiles = [];
+    }
+}
+
+class tile {
+    imageUrl : string;
+
+    constructor(imageUrl : string) {
+        this.imageUrl = imageUrl;
     }
 }
 
@@ -67,7 +76,7 @@ const consoleList : gameConsole[] = [
     },
     {
         name: "Game Boy Color",
-        colorPaletteLimit: 8
+        colorPaletteLimit: 4
     }
 ];
 
@@ -80,6 +89,8 @@ let new_button = document.getElementById("new-button");
 let modal_holder = document.getElementById("modal-holder");
 let modal_close = document.getElementById("modal-close");
 let color_palette_holder = document.getElementById("color_palette_holder");
+let new_project_name_input = <HTMLInputElement>document.getElementById("new-project-name-input");
+let console_select = <HTMLSelectElement>document.getElementById("console-select");
 
 /*
     Working Variables 
@@ -102,6 +113,8 @@ var workingProject : project;
 jQuery(function() {
     chosenColor = new color();
     changeActiveColor(5, 5, 5);
+    console.log(consoleList);
+    console.log(console_select.options);
 })
 
 /*
@@ -121,6 +134,36 @@ function closeHeader() {
 
 function addColorPalette() {
     
+}
+
+function createProject() {
+    var tempProjectName : string = new_project_name_input.value;
+    var tempProjectConsole : gameConsole;
+
+    switch (console_select.selectedIndex) {
+        case 1:
+            tempProjectConsole = consoleList[0];
+            break;
+        case 2:
+            tempProjectConsole = consoleList[1];
+            break;
+        case 3:
+            tempProjectConsole = consoleList[2];
+            break;
+        case 4:
+            tempProjectConsole = consoleList[3];
+            break;
+        default:
+            console.error("What how did you get here? No console is selected.")
+            break;
+    }
+
+    var tempProject : project = new project(tempProjectName, tempProjectConsole);
+    console.log(tempProject);
+
+    closeHeader();
+    workingProject = tempProject;
+    console.log(workingProject);
 }
 
 /*
