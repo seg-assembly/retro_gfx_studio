@@ -72,3 +72,7 @@
   flex: 1;
   background-color: darksalmon;
 }
+
+#trifold-holder {
+  pointer-events: none;
+}

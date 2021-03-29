@@ -25,10 +25,14 @@
     ID Styles 
 */
 #modal-holder {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
+  display: none;
+  position: fixed;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#modal-content-new {
+  display: none;
+}

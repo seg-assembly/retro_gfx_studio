@@ -11,14 +11,12 @@ class project {
     projectConsole: gameConsole;
     projectColorPalettes: colorPalette[];
     projectTiles: tile[];
-    newProject: boolean;
 
     constructor(name: string, projectConsole: gameConsole) {
         this.name = name;
         this.projectConsole = projectConsole;
         this.projectColorPalettes = [];
         this.projectTiles = [];
-        this.newProject = true;
     }
 }
 
@@ -98,6 +96,8 @@ let modal_close = document.getElementById("modal-close");
 let color_palette_holder = document.getElementById("color_palette_holder");
 let new_project_name_input = <HTMLInputElement>document.getElementById("new-project-name-input");
 let console_select = <HTMLSelectElement>document.getElementById("console-select");
+let modal_content_new = document.getElementById("modal-content-new");
+let trifold_holder = document.getElementById("trifold-holder");
 
 /*
     Working Variables 
@@ -113,6 +113,7 @@ var pixelGuideLeftPosition: number;
 var pixelGuideTopPosition: number;
 var chosenColor: color;
 var workingProject: project;
+var workingDirectory: string;
 
 /*
     Init 
@@ -133,10 +134,12 @@ function changeActiveColor(r, g, b) {
 
 function openNewHeader() {
     modal_holder.style.display = "flex";
+    modal_content_new.style.display = "flex";
 }
 
 function closeHeader() {
     modal_holder.style.display = "none";
+    modal_content_new.style.display = "none";
 }
 
 function addColorPalette() {
@@ -167,26 +170,46 @@ function createProject() {
 
     var tempProject: project = new project(tempProjectName, tempProjectConsole);
     console.log(tempProject);
-
     closeHeader();
     workingProject = tempProject;
+    workingDirectory = null;
+    trifold_holder.style.pointerEvents = "all"
     console.log(workingProject);
 }
 
-function saveProject() {
-    if (workingProject.newProject == true) {
-        dialog.showSaveDialog({
-            title: "Save project where...",
-            defaultPath: __dirname, 
-            buttonLabel: "Save",
-            filters: [{
-                name: "Retro Graphics Studio Projects",
-                extensions: [".rgsproj"],
-            }],
-            properties: [
-                'createDirectory'
-            ]
-        })
+function initiateSave() {
+    if (workingDirectory == null && workingProject != null) {
+        chooseProjectDirectory();
+    } else if (workingDirectory != null && workingProject != null) {
+        saveProjectDirectory();
+    }
+}
+
+function chooseProjectDirectory() {
+    dialog.showOpenDialog({
+        title: "Save project where...",
+        defaultPath: __dirname,
+        buttonLabel: "Save",
+        properties: [
+            'createDirectory',
+            'openDirectory'
+        ]
+    }).then(result => {
+        workingDirectory = path.join(result.filePaths[0], workingProject.name);
+        console.log(workingDirectory);
+        saveProjectDirectory();
+    })
+}
+
+function saveProjectDirectory() {
+    if (!fs.existsSync(workingDirectory)) {
+        fs.mkdir(workingDirectory, { recursive: false }, (err) => {
+            if(err) { console.error("Save Didn't Work! PANIC!"); }
+        });
+        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+    } else {
+        console.log("Directory Already Exists");
+        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
     }
 
 }

@@ -1,6 +1,8 @@
 "use strict";
 exports.__esModule = true;
 var electron = require("electron");
+var path = require("path");
+var fs = require("fs");
 var dialog = electron.remote.dialog;
 /*
     Classes
@@ -11,7 +13,6 @@ var project = /** @class */ (function () {
         this.projectConsole = projectConsole;
         this.projectColorPalettes = [];
         this.projectTiles = [];
-        this.newProject = true;
     }
     return project;
 }());
@@ -77,6 +78,7 @@ var modal_close = document.getElementById("modal-close");
 var color_palette_holder = document.getElementById("color_palette_holder");
 var new_project_name_input = document.getElementById("new-project-name-input");
 var console_select = document.getElementById("console-select");
+var modal_content_new = document.getElementById("modal-content-new");
 /*
     Working Variables
 */
@@ -91,6 +93,7 @@ var pixelGuideLeftPosition;
 var pixelGuideTopPosition;
 var chosenColor;
 var workingProject;
+var workingDirectory;
 /*
     Init
 */
@@ -108,9 +111,11 @@ function changeActiveColor(r, g, b) {
 }
 function openNewHeader() {
     modal_holder.style.display = "flex";
+    modal_content_new.style.display = "flex";
 }
 function closeHeader() {
     modal_holder.style.display = "none";
+    modal_content_new.style.display = "none";
 }
 function addColorPalette() {
 }
@@ -138,22 +143,44 @@ function createProject() {
     console.log(tempProject);
     closeHeader();
     workingProject = tempProject;
+    workingDirectory = null;
     console.log(workingProject);
 }
-function saveProject() {
-    if (workingProject.newProject == true) {
-        dialog.showSaveDialog({
-            title: "Save project where...",
-            defaultPath: __dirname,
-            buttonLabel: "Save",
-            filters: [{
-                    name: "Retro Graphics Studio Projects",
-                    extensions: [".rgsproj"]
-                }],
-            properties: [
-                'createDirectory'
-            ]
+function initiateSave() {
+    if (workingDirectory == null && workingProject != null) {
+        chooseProjectDirectory();
+    }
+    else if (workingDirectory != null && workingProject != null) {
+        saveProjectDirectory();
+    }
+}
+function chooseProjectDirectory() {
+    dialog.showOpenDialog({
+        title: "Save project where...",
+        defaultPath: __dirname,
+        buttonLabel: "Save",
+        properties: [
+            'createDirectory',
+            'openDirectory'
+        ]
+    }).then(function (result) {
+        workingDirectory = path.join(result.filePaths[0], workingProject.name);
+        console.log(workingDirectory);
+        saveProjectDirectory();
+    });
+}
+function saveProjectDirectory() {
+    if (!fs.existsSync(workingDirectory)) {
+        fs.mkdir(workingDirectory, { recursive: false }, function (err) {
+            if (err) {
+                console.error("Save Didn't Work! PANIC!");
+            }
         });
+        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+    }
+    else {
+        console.log("Directory Already Exists");
+        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
     }
 }
 /*
