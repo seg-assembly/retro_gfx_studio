@@ -75,10 +75,12 @@ var pixel_canvas = document.getElementById("pixel-canvas");
 var new_button = document.getElementById("new-button");
 var modal_holder = document.getElementById("modal-holder");
 var modal_close = document.getElementById("modal-close");
-var color_palette_holder = document.getElementById("color_palette_holder");
+var color_palette_holder = document.getElementById("color-palette-holder");
 var new_project_name_input = document.getElementById("new-project-name-input");
 var console_select = document.getElementById("console-select");
 var modal_content_new = document.getElementById("modal-content-new");
+var trifold_holder = document.getElementById("trifold-holder");
+var color_palette_box_template = document.getElementById("color-palette-box-template");
 /*
     Working Variables
 */
@@ -118,6 +120,24 @@ function closeHeader() {
     modal_content_new.style.display = "none";
 }
 function addColorPalette() {
+    if (workingProject != null) {
+        workingProject.projectColorPalettes.push(new colorPalette);
+        console.log(workingProject.projectColorPalettes);
+        color_palette_holder.appendChild(constructColorPaletteBox());
+    }
+}
+function constructColorPaletteBox() {
+    var colorPaletteBox = document.createElement("div");
+    colorPaletteBox.classList.add("color-palette-box");
+    var colorPaletteBoxTitle = document.createElement("input");
+    colorPaletteBoxTitle.classList.add("color-palette-name");
+    colorPaletteBoxTitle.type = "text";
+    colorPaletteBoxTitle.placeholder = "Palette #";
+    var colorPaletteGrid = document.createElement("div");
+    colorPaletteGrid.classList.add("color-palette-grid");
+    colorPaletteBox.appendChild(colorPaletteBoxTitle);
+    colorPaletteBox.appendChild(colorPaletteGrid);
+    return colorPaletteBox;
 }
 function createProject() {
     var tempProjectName = new_project_name_input.value;
@@ -144,6 +164,7 @@ function createProject() {
     closeHeader();
     workingProject = tempProject;
     workingDirectory = null;
+    trifold_holder.style.pointerEvents = "all";
     console.log(workingProject);
 }
 function initiateSave() {
@@ -174,6 +195,11 @@ function saveProjectDirectory() {
         fs.mkdir(workingDirectory, { recursive: false }, function (err) {
             if (err) {
                 console.error("Save Didn't Work! PANIC!");
+            }
+        });
+        fs.mkdir(path.join(workingDirectory, "tiles"), { recursive: false }, function (err) {
+            if (err) {
+                console.error("Tile Folder Creation didn't work");
             }
         });
         fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));

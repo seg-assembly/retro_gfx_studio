@@ -93,11 +93,12 @@ let pixel_canvas = document.getElementById("pixel-canvas");
 let new_button = document.getElementById("new-button");
 let modal_holder = document.getElementById("modal-holder");
 let modal_close = document.getElementById("modal-close");
-let color_palette_holder = document.getElementById("color_palette_holder");
+let color_palette_holder = document.getElementById("color-palette-holder");
 let new_project_name_input = <HTMLInputElement>document.getElementById("new-project-name-input");
 let console_select = <HTMLSelectElement>document.getElementById("console-select");
 let modal_content_new = document.getElementById("modal-content-new");
 let trifold_holder = document.getElementById("trifold-holder");
+let color_palette_box_template = document.getElementById("color-palette-box-template");
 
 /*
     Working Variables 
@@ -142,8 +143,45 @@ function closeHeader() {
     modal_content_new.style.display = "none";
 }
 
+/*
+*   (Function)
+*   Adds a Color Palette to the Working Project and creates a Color Palette Box to go with it 
+*/
 function addColorPalette() {
+    if(workingProject != null) {
+        workingProject.projectColorPalettes.push(new colorPalette);
+        console.log(workingProject.projectColorPalettes);
+        
+        color_palette_holder.appendChild(constructColorPaletteBox());
+    }
+    
+}
 
+/*
+*   (Function) 
+*   Constructs and returns a Color Palette Box 
+*/
+function constructColorPaletteBox() : HTMLElement {
+    //Create the Color Palette Box <div> itself 
+    var colorPaletteBox : HTMLElement = document.createElement("div");
+    colorPaletteBox.classList.add("color-palette-box");
+
+    //Creates the Color Palette Box Title Text <input>  
+    var colorPaletteBoxTitle : HTMLInputElement = document.createElement("input");
+    colorPaletteBoxTitle.classList.add("color-palette-name");
+    colorPaletteBoxTitle.type = "text";
+    colorPaletteBoxTitle.placeholder = "Palette #";
+
+    //Creates the Color Palette Box Color Grid <div>
+    var colorPaletteGrid : HTMLElement = document.createElement("div");
+    colorPaletteGrid.classList.add("color-palette-grid");
+
+    //Adds the children to the Color Palette Box <div> 
+    colorPaletteBox.appendChild(colorPaletteBoxTitle);
+    colorPaletteBox.appendChild(colorPaletteGrid);
+
+    //Returns the Color Palette Box 
+    return colorPaletteBox;
 }
 
 function createProject() {
@@ -206,6 +244,9 @@ function saveProjectDirectory() {
         fs.mkdir(workingDirectory, { recursive: false }, (err) => {
             if(err) { console.error("Save Didn't Work! PANIC!"); }
         });
+        fs.mkdir(path.join(workingDirectory, "tiles"), { recursive: false }, (err) => {
+            if(err) { console.error("Tile Folder Creation didn't work"); }
+        })
         fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
     } else {
         console.log("Directory Already Exists");
