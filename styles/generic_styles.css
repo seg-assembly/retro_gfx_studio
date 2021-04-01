@@ -4,8 +4,8 @@
 :root {
     --pixel-size-skew: 24px;
     --pixel-guide-size: calc(var(--pixel-size-skew) - 2px);
-    --pixel-art-height: 16;
-    --pixel-art-width: 16;
+    --pixel-art-height: 8;
+    --pixel-art-width: 8;
   }
   
   body {

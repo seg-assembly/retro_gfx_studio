@@ -276,3 +276,22 @@ canvas_holder.addEventListener("mousemove", e => {
     pixel_guide.style.left = pixelGuideLeftPosition + "px";
     pixel_guide.style.top = pixelGuideTopPosition + "px";
 });
+
+$("#create-project-button").on("click", function() {
+    if($("#new-project-name-input").val() == "") {
+        alert("Please enter a project name.")
+    } else if(console_select.value == "") {
+        alert("Please select a console for the project.");
+    } else {
+        createProject();
+    }
+});
+
+//  (Event Handler) 
+//  Updates the color palette name in the project when changed on the GUI 
+$("#color-palette-holder").on("change", ".color-palette-name", function() {
+    var paletteIndex = $(".color-palette-name").index(this);
+    console.log("paletteIndex = " + paletteIndex);
+    workingProject.projectColorPalettes[paletteIndex].name = <string>$(this).val();
+    console.log("paletteName = " + $(this).val());
+})

@@ -119,6 +119,10 @@ function closeHeader() {
     modal_holder.style.display = "none";
     modal_content_new.style.display = "none";
 }
+/*
+*   (Function)
+*   Adds a Color Palette to the Working Project and creates a Color Palette Box to go with it
+*/
 function addColorPalette() {
     if (workingProject != null) {
         workingProject.projectColorPalettes.push(new colorPalette);
@@ -126,17 +130,26 @@ function addColorPalette() {
         color_palette_holder.appendChild(constructColorPaletteBox());
     }
 }
+/*
+*   (Function)
+*   Constructs and returns a Color Palette Box
+*/
 function constructColorPaletteBox() {
+    //Create the Color Palette Box <div> itself 
     var colorPaletteBox = document.createElement("div");
     colorPaletteBox.classList.add("color-palette-box");
+    //Creates the Color Palette Box Title Text <input>  
     var colorPaletteBoxTitle = document.createElement("input");
     colorPaletteBoxTitle.classList.add("color-palette-name");
     colorPaletteBoxTitle.type = "text";
     colorPaletteBoxTitle.placeholder = "Palette #";
+    //Creates the Color Palette Box Color Grid <div>
     var colorPaletteGrid = document.createElement("div");
     colorPaletteGrid.classList.add("color-palette-grid");
+    //Adds the children to the Color Palette Box <div> 
     colorPaletteBox.appendChild(colorPaletteBoxTitle);
     colorPaletteBox.appendChild(colorPaletteGrid);
+    //Returns the Color Palette Box 
     return colorPaletteBox;
 }
 function createProject() {
@@ -225,4 +238,23 @@ canvas_holder.addEventListener("mousemove", function (e) {
     pixelGuideTopPosition = Math.floor(mouseY / pixelSizeSkew) * pixelSizeSkew;
     pixel_guide.style.left = pixelGuideLeftPosition + "px";
     pixel_guide.style.top = pixelGuideTopPosition + "px";
+});
+$("#create-project-button").on("click", function () {
+    if ($("#new-project-name-input").val() == "") {
+        alert("Please enter a project name.");
+    }
+    else if (console_select.value == "") {
+        alert("Please select a console for the project.");
+    }
+    else {
+        createProject();
+    }
+});
+//  (Event Handler) 
+//  Updates the color palette name in the project when changed on the GUI 
+$("#color-palette-holder").on("change", ".color-palette-name", function () {
+    var paletteIndex = $(".color-palette-name").index(this);
+    console.log("paletteIndex = " + paletteIndex);
+    workingProject.projectColorPalettes[paletteIndex].name = $(this).val();
+    console.log("paletteName = " + $(this).val());
 });

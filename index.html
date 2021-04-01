@@ -39,7 +39,7 @@
         <option value="Game Boy" disabled>Game Boy</option>
         <option value="Game Boy Color" disabled>Game Boy Color</option>
       </select>
-      <button id="create-project-button" class="modal-tight" onclick="createProject()">
+      <button id="create-project-button" class="modal-tight">
         Create Project
       </button>
     </div>
@@ -54,6 +54,9 @@
     <button id="open-button" class="header-button">
       Open
     </button>
+    <button id="open-button" class="header-button" onClick="console.log(workingProject)">
+      Print workingProject
+    </button>
   </div>
   <div id="trifold-holder">
     <div id="color-section">
@@ -61,10 +64,6 @@
         <button id="add-color-palette-button" onClick="addColorPalette()">+</button>
       </div>
       <div id="color-palette-holder">
-        <div class="color-palette-box">
-          <input type="text" class="color-palette-name" placeholder="Palette #"></input>
-          <div class="color-palette-grid"></div>
-        </div>
       </div>
       <div id="nes-color-picker"></div>
       <div id="gb-color-picker"></div>
