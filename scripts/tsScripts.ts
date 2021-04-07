@@ -21,10 +21,11 @@ class project {
 }
 
 class tile {
-    imageUrl: string;
+    tileID: number;
+    imageData: string;
 
-    constructor(imageUrl: string) {
-        this.imageUrl = imageUrl;
+    constructor(tileID : number) {
+        this.tileID = tileID;
     }
 }
 
@@ -43,6 +44,11 @@ class color {
         this.red = r;
         this.green = g;
         this.blue = b;
+    }
+
+    getRGB() {
+        var rgb = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
+        return rgb;
     }
 }
 
@@ -89,7 +95,7 @@ const consoleList: gameConsole[] = [
 let pixel_guide = document.getElementById("pixel-guide");
 let art_section = document.getElementById("art-section");
 let canvas_holder = document.getElementById("canvas-holder");
-let pixel_canvas = document.getElementById("pixel-canvas");
+let pixel_canvas = <HTMLCanvasElement>document.getElementById("pixel-canvas");
 let new_button = document.getElementById("new-button");
 let modal_holder = document.getElementById("modal-holder");
 let modal_close = document.getElementById("modal-close");
@@ -105,9 +111,11 @@ let color_palette_box_template = document.getElementById("color-palette-box-temp
 */
 var mouseX: number;
 var mouseY: number;
-var pixelSizeSkew: number = 24;
-var pixelArtHeight: number;
-var pixelArtWidth: number;
+var mousePixelX : number;
+var mousePixelY : number;
+var pixelSizeSkew: number = 48;
+var pixelArtHeight: number = 8;
+var pixelArtWidth: number = 8;
 var canvasHolderLeft: number;
 var canvasHolderTop: number;
 var pixelGuideLeftPosition: number;
@@ -122,6 +130,8 @@ var workingDirectory: string;
 jQuery(function () {
     chosenColor = new color();
     changeActiveColor(5, 5, 5);
+    renderPixelCanvas();
+    console.log(chosenColor.getRGB());
     console.log(consoleList);
     console.log(console_select.options);
 })
@@ -219,7 +229,7 @@ function initiateSave() {
     if (workingDirectory == null && workingProject != null) {
         chooseProjectDirectory();
     } else if (workingDirectory != null && workingProject != null) {
-        saveProjectDirectory();
+        saveProjectNewDirectory();
     }
 }
 
@@ -235,24 +245,57 @@ function chooseProjectDirectory() {
     }).then(result => {
         workingDirectory = path.join(result.filePaths[0], workingProject.name);
         console.log(workingDirectory);
-        saveProjectDirectory();
+        saveProjectNewDirectory();
     })
 }
 
-function saveProjectDirectory() {
+function saveProjectNewDirectory() {
     if (!fs.existsSync(workingDirectory)) {
         fs.mkdir(workingDirectory, { recursive: false }, (err) => {
             if(err) { console.error("Save Didn't Work! PANIC!"); }
         });
-        fs.mkdir(path.join(workingDirectory, "tiles"), { recursive: false }, (err) => {
+        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+        fs.mkdir((workingDirectory + "/tiles"), { recursive: false }, (err) => {
             if(err) { console.error("Tile Folder Creation didn't work"); }
-        })
-        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+        });
     } else {
-        console.log("Directory Already Exists");
-        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+        console.log("Moving to saveProject()");
+        saveProject();
     }
 
+}
+
+function saveProject() {
+    fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+}
+
+function openProject() {
+
+}
+
+function loadProject() {
+    
+}
+
+function plotPixel() {
+    var paintLeft : number = mousePixelX * pixelSizeSkew;
+    var paintTop : number = mousePixelY * pixelSizeSkew;
+
+    console.log(paintLeft);
+    console.log(paintTop);
+
+    var drawing = pixel_canvas.getContext("2d");
+    drawing.fillStyle = chosenColor.getRGB();
+    drawing.fillRect(paintLeft, paintTop, pixelSizeSkew, pixelSizeSkew);
+
+}
+
+function renderPixelCanvas() {
+    canvas_holder.style.width = (pixelSizeSkew * pixelArtWidth).toString() + "px";
+    canvas_holder.style.height = (pixelSizeSkew * pixelArtHeight).toString() + "px";
+
+    pixel_guide.style.width = (pixelSizeSkew - 2).toString() + "px";
+    pixel_guide.style.height = (pixelSizeSkew - 2).toString() + "px";
 }
 
 /*
@@ -273,10 +316,22 @@ canvas_holder.addEventListener("mousemove", e => {
     pixelGuideLeftPosition = Math.floor(mouseX / pixelSizeSkew) * pixelSizeSkew;
     pixelGuideTopPosition = Math.floor(mouseY / pixelSizeSkew) * pixelSizeSkew;
 
+    mousePixelX = pixelGuideLeftPosition / pixelSizeSkew;
+    mousePixelY = pixelGuideTopPosition / pixelSizeSkew;
+
+    console.log("mousePixelX: " + mousePixelX);
+    console.log("mousePixelY: " + mousePixelY);
+
     pixel_guide.style.left = pixelGuideLeftPosition + "px";
     pixel_guide.style.top = pixelGuideTopPosition + "px";
 });
 
+canvas_holder.addEventListener("click", e => {
+    plotPixel();
+})
+
+//  (Event Handler)
+//  Makes sure the Project has a name and console before creating allowing creation 
 $("#create-project-button").on("click", function() {
     if($("#new-project-name-input").val() == "") {
         alert("Please enter a project name.")

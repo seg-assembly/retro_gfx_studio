@@ -49,8 +49,6 @@
   top: 15px;
 
   /*Size Styles*/
-  width: calc(var(--pixel-size-skew) * var(--pixel-art-width));
-  height: calc(var(--pixel-size-skew) * var(--pixel-art-height));
 }
 
 #pixel-canvas {
@@ -63,8 +61,6 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: var(--pixel-guide-size);
-  height: var(--pixel-guide-size);
   border: 1px solid rgba(255, 0, 0, 0.5);
 }
 

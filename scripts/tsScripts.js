@@ -17,8 +17,8 @@ var project = /** @class */ (function () {
     return project;
 }());
 var tile = /** @class */ (function () {
-    function tile(imageUrl) {
-        this.imageUrl = imageUrl;
+    function tile(tileID) {
+        this.tileID = tileID;
     }
     return tile;
 }());
@@ -32,6 +32,10 @@ var color = /** @class */ (function () {
         this.red = r;
         this.green = g;
         this.blue = b;
+    };
+    color.prototype.getRGB = function () {
+        var rgb = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
+        return rgb;
     };
     return color;
 }());
@@ -86,9 +90,11 @@ var color_palette_box_template = document.getElementById("color-palette-box-temp
 */
 var mouseX;
 var mouseY;
-var pixelSizeSkew = 24;
-var pixelArtHeight;
-var pixelArtWidth;
+var mousePixelX;
+var mousePixelY;
+var pixelSizeSkew = 48;
+var pixelArtHeight = 8;
+var pixelArtWidth = 8;
 var canvasHolderLeft;
 var canvasHolderTop;
 var pixelGuideLeftPosition;
@@ -102,6 +108,8 @@ var workingDirectory;
 jQuery(function () {
     chosenColor = new color();
     changeActiveColor(5, 5, 5);
+    renderPixelCanvas();
+    console.log(chosenColor.getRGB());
     console.log(consoleList);
     console.log(console_select.options);
 });
@@ -185,7 +193,7 @@ function initiateSave() {
         chooseProjectDirectory();
     }
     else if (workingDirectory != null && workingProject != null) {
-        saveProjectDirectory();
+        saveProjectNewDirectory();
     }
 }
 function chooseProjectDirectory() {
@@ -200,27 +208,49 @@ function chooseProjectDirectory() {
     }).then(function (result) {
         workingDirectory = path.join(result.filePaths[0], workingProject.name);
         console.log(workingDirectory);
-        saveProjectDirectory();
+        saveProjectNewDirectory();
     });
 }
-function saveProjectDirectory() {
+function saveProjectNewDirectory() {
     if (!fs.existsSync(workingDirectory)) {
         fs.mkdir(workingDirectory, { recursive: false }, function (err) {
             if (err) {
                 console.error("Save Didn't Work! PANIC!");
             }
         });
-        fs.mkdir(path.join(workingDirectory, "tiles"), { recursive: false }, function (err) {
+        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+        fs.mkdir((workingDirectory + "/tiles"), { recursive: false }, function (err) {
             if (err) {
                 console.error("Tile Folder Creation didn't work");
             }
         });
-        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
     }
     else {
-        console.log("Directory Already Exists");
-        fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+        console.log("Moving to saveProject()");
+        saveProject();
     }
+}
+function saveProject() {
+    fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
+}
+function openProject() {
+}
+function loadProject() {
+}
+function plotPixel() {
+    var paintLeft = mousePixelX * pixelSizeSkew;
+    var paintTop = mousePixelY * pixelSizeSkew;
+    console.log(paintLeft);
+    console.log(paintTop);
+    var drawing = pixel_canvas.getContext("2d");
+    drawing.fillStyle = chosenColor.getRGB();
+    drawing.fillRect(paintLeft, paintTop, pixelSizeSkew, pixelSizeSkew);
+}
+function renderPixelCanvas() {
+    canvas_holder.style.width = (pixelSizeSkew * pixelArtWidth).toString() + "px";
+    canvas_holder.style.height = (pixelSizeSkew * pixelArtHeight).toString() + "px";
+    pixel_guide.style.width = (pixelSizeSkew - 2).toString() + "px";
+    pixel_guide.style.height = (pixelSizeSkew - 2).toString() + "px";
 }
 /*
     Event Listeners
@@ -236,9 +266,18 @@ canvas_holder.addEventListener("mousemove", function (e) {
     mouseY = e.clientY - pixel_canvas.getBoundingClientRect().top;
     pixelGuideLeftPosition = Math.floor(mouseX / pixelSizeSkew) * pixelSizeSkew;
     pixelGuideTopPosition = Math.floor(mouseY / pixelSizeSkew) * pixelSizeSkew;
+    mousePixelX = pixelGuideLeftPosition / pixelSizeSkew;
+    mousePixelY = pixelGuideTopPosition / pixelSizeSkew;
+    console.log("mousePixelX: " + mousePixelX);
+    console.log("mousePixelY: " + mousePixelY);
     pixel_guide.style.left = pixelGuideLeftPosition + "px";
     pixel_guide.style.top = pixelGuideTopPosition + "px";
 });
+canvas_holder.addEventListener("click", function (e) {
+    plotPixel();
+});
+//  (Event Handler)
+//  Makes sure the Project has a name and console before creating allowing creation 
 $("#create-project-button").on("click", function () {
     if ($("#new-project-name-input").val() == "") {
         alert("Please enter a project name.");
