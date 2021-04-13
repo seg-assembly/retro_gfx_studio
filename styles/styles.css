@@ -52,8 +52,6 @@
 }
 
 #pixel-canvas {
-  width: inherit;
-  height: inherit;
   background-color: white;
 }
 

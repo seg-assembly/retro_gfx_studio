@@ -285,14 +285,15 @@ function plotPixel() {
     console.log(paintTop);
 
     var drawing = pixel_canvas.getContext("2d");
+    drawing.lineWidth = 1;
     drawing.fillStyle = chosenColor.getRGB();
     drawing.fillRect(paintLeft, paintTop, pixelSizeSkew, pixelSizeSkew);
 
 }
 
 function renderPixelCanvas() {
-    canvas_holder.style.width = (pixelSizeSkew * pixelArtWidth).toString() + "px";
-    canvas_holder.style.height = (pixelSizeSkew * pixelArtHeight).toString() + "px";
+    pixel_canvas.setAttribute("width", (pixelSizeSkew * pixelArtWidth).toString() + "px");
+    pixel_canvas.setAttribute("height", (pixelSizeSkew * pixelArtHeight).toString() + "px");
 
     pixel_guide.style.width = (pixelSizeSkew - 2).toString() + "px";
     pixel_guide.style.height = (pixelSizeSkew - 2).toString() + "px";
