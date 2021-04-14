@@ -9,9 +9,21 @@
 
 .color-palette-box {
     background-color: coral;
-    height: 50px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+.color-palette-name {
+    flex: 1;
 }
 
 .color-palette-grid {
     display: flex;
+    flex: 2;
+    gap: 5px;
+}
+
+.color-button {
+    flex: 1;
 }

@@ -186,6 +186,13 @@ function constructColorPaletteBox() : HTMLElement {
     var colorPaletteGrid : HTMLElement = document.createElement("div");
     colorPaletteGrid.classList.add("color-palette-grid");
 
+    //Adds the color buttons to the color palettes based on the project console color palette limit 
+    for(var i = 0; i < workingProject.projectConsole.colorPaletteLimit; i++) {
+        var colorButton : HTMLElement = document.createElement("button");
+        colorButton.classList.add("color-button");
+        colorPaletteGrid.appendChild(colorButton);
+    }
+
     //Adds the children to the Color Palette Box <div> 
     colorPaletteBox.appendChild(colorPaletteBoxTitle);
     colorPaletteBox.appendChild(colorPaletteGrid);
@@ -194,6 +201,10 @@ function constructColorPaletteBox() : HTMLElement {
     return colorPaletteBox;
 }
 
+/*
+*   (Function) 
+*   Constructs the workingProject from the specifications of the new project dialog 
+*/
 function createProject() {
     var tempProjectName: string = new_project_name_input.value;
     var tempProjectConsole: gameConsole;
