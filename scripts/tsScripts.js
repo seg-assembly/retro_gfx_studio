@@ -72,19 +72,18 @@ var consoleList = [
     }
 ];
 //Basic JavaScript HTMLElements 
-var pixel_guide = document.getElementById("pixel-guide");
-var art_section = document.getElementById("art-section");
-var canvas_holder = document.getElementById("canvas-holder");
+var pixel_guide = $("#pixel-guide");
+var art_section = $("#art-section");
+var canvas_holder = $("#canvas-holder");
 var pixel_canvas = document.getElementById("pixel-canvas");
-var new_button = document.getElementById("new-button");
-var modal_holder = document.getElementById("modal-holder");
-var modal_close = document.getElementById("modal-close");
-var color_palette_holder = document.getElementById("color-palette-holder");
-var new_project_name_input = document.getElementById("new-project-name-input");
+var new_button = $("#new-button");
+var modal_holder = $("#modal-holder");
+var modal_close = $("#modal-close");
+var color_palette_holder = $("#color-palette-holder");
+var new_project_name_input = $("#new-project-name-input");
 var console_select = document.getElementById("console-select");
-var modal_content_new = document.getElementById("modal-content-new");
-var trifold_holder = document.getElementById("trifold-holder");
-var color_palette_box_template = document.getElementById("color-palette-box-template");
+var modal_content_new = $("#modal-content-new");
+var trifold_holder = $("#trifold-holder");
 /*
     Working Variables
 */
@@ -120,12 +119,12 @@ function changeActiveColor(r, g, b) {
     chosenColor.setColor(r, g, b);
 }
 function openNewHeader() {
-    modal_holder.style.display = "flex";
-    modal_content_new.style.display = "flex";
+    modal_holder.css("display", "flex");
+    modal_content_new.css("display", "flex");
 }
 function closeHeader() {
-    modal_holder.style.display = "none";
-    modal_content_new.style.display = "none";
+    modal_holder.css("display", "none");
+    modal_content_new.css("display", "none");
 }
 /*
 *   (Function)
@@ -135,14 +134,15 @@ function addColorPalette() {
     if (workingProject != null) {
         workingProject.projectColorPalettes.push(new colorPalette);
         console.log(workingProject.projectColorPalettes);
-        color_palette_holder.appendChild(constructColorPaletteBox());
+        color_palette_holder.append(constructColorPaletteBox());
     }
 }
 /*
 *   (Function)
 *   Constructs and returns a Color Palette Box
 */
-function constructColorPaletteBox() {
+function constructColorPaletteBox(passColorPalette) {
+    if (passColorPalette === void 0) { passColorPalette = null; }
     //Create the Color Palette Box <div> itself 
     var colorPaletteBox = document.createElement("div");
     colorPaletteBox.classList.add("color-palette-box");
@@ -158,6 +158,12 @@ function constructColorPaletteBox() {
     for (var i = 0; i < workingProject.projectConsole.colorPaletteLimit; i++) {
         var colorButton = document.createElement("button");
         colorButton.classList.add("color-button");
+        if (passColorPalette != null) {
+            colorButton.style.backgroundColor = passColorPalette.colors[i].getRGB();
+        }
+        else {
+            colorButton.style.backgroundColor = "rgb(255, 255, 255)";
+        }
         colorPaletteGrid.appendChild(colorButton);
     }
     //Adds the children to the Color Palette Box <div> 
@@ -171,7 +177,7 @@ function constructColorPaletteBox() {
 *   Constructs the workingProject from the specifications of the new project dialog
 */
 function createProject() {
-    var tempProjectName = new_project_name_input.value;
+    var tempProjectName = new_project_name_input.val().toString();
     var tempProjectConsole;
     switch (console_select.selectedIndex) {
         case 1:
@@ -195,7 +201,7 @@ function createProject() {
     closeHeader();
     workingProject = tempProject;
     workingDirectory = null;
-    trifold_holder.style.pointerEvents = "all";
+    trifold_holder.css("pointerEvents", "all");
     console.log(workingProject);
 }
 function initiateSave() {
@@ -260,31 +266,45 @@ function plotPixel() {
 function renderPixelCanvas() {
     pixel_canvas.setAttribute("width", (pixelSizeSkew * pixelArtWidth).toString() + "px");
     pixel_canvas.setAttribute("height", (pixelSizeSkew * pixelArtHeight).toString() + "px");
-    pixel_guide.style.width = (pixelSizeSkew - 2).toString() + "px";
-    pixel_guide.style.height = (pixelSizeSkew - 2).toString() + "px";
+    pixel_guide.css("width", (pixelSizeSkew - 2).toString() + "px");
+    pixel_guide.css("height", (pixelSizeSkew - 2).toString() + "px");
 }
+function setChosenColor(button) {
+    alert(button.style.backgroundColor);
+}
+function openColorPicker(button) {
+    $("#nes-color-picker").css("left", button.getBoundingClientRect().left);
+    $("#nes-color-picker").css("top", button.getBoundingClientRect().top);
+}
+//function setChosenColor(button: JQuery<HTMLElement>) {
+//    alert(button.css("background-color"));
+//}
+//function openColorPicker(button: JQuery<HTMLElement>) {
+//    $("#nes-color-picker").css("left", button.position().left);
+//    $("#nes-color-picker").css("top", button.position().top);
+//}
 /*
     Event Listeners
 */
-canvas_holder.addEventListener("mouseenter", function (e) {
-    pixel_guide.style.display = "block";
+canvas_holder.on("mouseenter", function (e) {
+    pixel_guide.css("display", "block");
 });
-canvas_holder.addEventListener("mouseleave", function (e) {
-    pixel_guide.style.display = "none";
+canvas_holder.on("mouseleave", function (e) {
+    pixel_guide.css("display", "none");
 });
-canvas_holder.addEventListener("mousemove", function (e) {
+canvas_holder.on("mousemove", function (e) {
     mouseX = e.clientX - pixel_canvas.getBoundingClientRect().left;
     mouseY = e.clientY - pixel_canvas.getBoundingClientRect().top;
     pixelGuideLeftPosition = Math.floor(mouseX / pixelSizeSkew) * pixelSizeSkew;
     pixelGuideTopPosition = Math.floor(mouseY / pixelSizeSkew) * pixelSizeSkew;
     mousePixelX = pixelGuideLeftPosition / pixelSizeSkew;
     mousePixelY = pixelGuideTopPosition / pixelSizeSkew;
-    console.log("mousePixelX: " + mousePixelX);
-    console.log("mousePixelY: " + mousePixelY);
-    pixel_guide.style.left = pixelGuideLeftPosition + "px";
-    pixel_guide.style.top = pixelGuideTopPosition + "px";
+    //console.log("mousePixelX: " + mousePixelX);
+    //console.log("mousePixelY: " + mousePixelY);
+    pixel_guide.css("left", pixelGuideLeftPosition + "px");
+    pixel_guide.css("top", pixelGuideTopPosition + "px");
 });
-canvas_holder.addEventListener("click", function (e) {
+canvas_holder.on("click", function () {
     plotPixel();
 });
 //  (Event Handler)
@@ -307,4 +327,18 @@ $("#color-palette-holder").on("change", ".color-palette-name", function () {
     console.log("paletteIndex = " + paletteIndex);
     workingProject.projectColorPalettes[paletteIndex].name = $(this).val();
     console.log("paletteName = " + $(this).val());
+});
+//  (Event Handler)
+//  .color-buttons LMB 
+$("#color-palette-holder").on("click", ".color-button", function () {
+    //var button = $("this");
+    //setChosenColor(button);
+    setChosenColor(this);
+});
+//  (Event Handler)
+//  .color-buttons RMB  
+$("#color-palette-holder").on("contextmenu", ".color-button", function () {
+    //var button = $("this");
+    //openColorPicker(button);
+    openColorPicker(this);
 });
