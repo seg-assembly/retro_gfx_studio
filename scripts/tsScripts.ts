@@ -33,6 +33,7 @@ class color {
     red: number;
     green: number;
     blue: number;
+    rgbColorString: string;
 
     constructor() {
         this.red;
@@ -40,15 +41,31 @@ class color {
         this.blue;
     }
 
-    setColor(r, g, b) {
+    setColor(r: number, g: number, b: number) {
         this.red = r;
         this.green = g;
         this.blue = b;
+        this.rgbColorString = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
+    }
+
+    setColorByRGB(rgb: string) {
+        //Removes the rgb string elements from the string to get the rgb values 
+        rgb = rgb.replace("rgb(", "");
+        rgb = rgb.replace(")", "");
+        rgb = rgb.replace(",", "");
+        rgb = rgb.replace(",", "");
+
+        //Splits the rgb values into three substrings for r, g, and b 
+        var values = rgb.split(" ");
+
+        this.setColor(parseInt(values[0]), parseInt(values[1]), parseInt(values[2]));
+
+        //Test log  
+        console.log(this.getRGB());
     }
 
     getRGB() {
-        var rgb = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
-        return rgb;
+        return this.rgbColorString;
     }
 }
 
@@ -100,7 +117,7 @@ let new_button = $("#new-button");
 let modal_holder = $("#modal-holder");
 let modal_close = $("#modal-close");
 let color_palette_holder = $("#color-palette-holder");
-let new_project_name_input = $("#new-project-name-input"); 
+let new_project_name_input = $("#new-project-name-input");
 let console_select = <HTMLSelectElement>document.getElementById("console-select");
 let modal_content_new = $("#modal-content-new");
 let trifold_holder = $("#trifold-holder");
@@ -317,7 +334,7 @@ function renderPixelCanvas() {
 }
 
 function setChosenColor(button: HTMLElement) {
-    alert(button.style.backgroundColor);
+    chosenColor.setColorByRGB(button.style.backgroundColor);
 }
 
 function openColorPicker(button: HTMLElement) {
@@ -362,7 +379,7 @@ canvas_holder.on("mousemove", e => {
     pixel_guide.css("top", pixelGuideTopPosition + "px");
 });
 
-canvas_holder.on("click", function() {
+canvas_holder.on("click", function () {
     plotPixel();
 })
 
@@ -389,7 +406,7 @@ $("#color-palette-holder").on("change", ".color-palette-name", function () {
 
 //  (Event Handler)
 //  .color-buttons LMB 
-$("#color-palette-holder").on("click", ".color-button", function() {
+$("#color-palette-holder").on("click", ".color-button", function () {
     //var button = $("this");
     //setChosenColor(button);
     setChosenColor(this);
@@ -397,7 +414,7 @@ $("#color-palette-holder").on("click", ".color-button", function() {
 
 //  (Event Handler)
 //  .color-buttons RMB  
-$("#color-palette-holder").on("contextmenu", ".color-button", function() {
+$("#color-palette-holder").on("contextmenu", ".color-button", function () {
     //var button = $("this");
     //openColorPicker(button);
     openColorPicker(this);

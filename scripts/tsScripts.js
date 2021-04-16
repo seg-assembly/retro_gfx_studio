@@ -32,10 +32,22 @@ var color = /** @class */ (function () {
         this.red = r;
         this.green = g;
         this.blue = b;
+        this.rgbColorString = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
+    };
+    color.prototype.setColorByRGB = function (rgb) {
+        //Removes the rgb string elements from the string to get the rgb values 
+        rgb = rgb.replace("rgb(", "");
+        rgb = rgb.replace(")", "");
+        rgb = rgb.replace(",", "");
+        rgb = rgb.replace(",", "");
+        //Splits the rgb values into three substrings for r, g, and b 
+        var values = rgb.split(" ");
+        this.setColor(parseInt(values[0]), parseInt(values[1]), parseInt(values[2]));
+        //Test log  
+        console.log(this.getRGB);
     };
     color.prototype.getRGB = function () {
-        var rgb = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
-        return rgb;
+        return this.rgbColorString;
     };
     return color;
 }());
@@ -270,7 +282,8 @@ function renderPixelCanvas() {
     pixel_guide.css("height", (pixelSizeSkew - 2).toString() + "px");
 }
 function setChosenColor(button) {
-    alert(button.style.backgroundColor);
+    console.log(button.style.backgroundColor);
+    chosenColor.setColorByRGB(button.style.backgroundColor);
 }
 function openColorPicker(button) {
     $("#nes-color-picker").css("left", button.getBoundingClientRect().left);
