@@ -30,21 +30,28 @@ class tile {
 }
 
 class color {
+    colorID: string;
     red: number;
     green: number;
     blue: number;
     rgbColorString: string;
 
-    constructor() {
-        this.red;
-        this.green;
-        this.blue;
+    constructor(colorID: string = null, red: number = null, green: number = null, blue:number = null) {
+        this.colorID = colorID;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.setColorString();
     }
 
     setColor(r: number, g: number, b: number) {
         this.red = r;
         this.green = g;
         this.blue = b;
+        this.setColorString();
+    }
+
+    setColorString() {
         this.rgbColorString = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
     }
 
@@ -83,11 +90,15 @@ class gameConsole {
     name: string;
     colorPaletteLimit: number;
 
-    constructor(name, colorPaletteLimit) {
+    constructor(name: string, colorPaletteLimit: number) {
         this.name = name;
         this.colorPaletteLimit = colorPaletteLimit;
     }
 }
+
+/* 
+    Data 
+*/
 
 const consoleList: gameConsole[] = [
     {
@@ -108,6 +119,75 @@ const consoleList: gameConsole[] = [
     }
 ];
 
+const nesColors: color[] = [
+    new color("nes00", 84, 84, 84), //nes00
+    new color("nes01", 0, 30, 116), //nes01 
+    new color("nes02", 8, 16, 144), //nes02 
+    new color("nes03", 48, 0, 136), //nes03 
+    new color("nes04", 68, 0, 100), //nes04 
+    new color("nes05", 92, 0, 48),  //nes05 
+    new color("nes06", 84, 4, 0),   //nes06
+    new color("nes07", 60, 24,0),   //nes07
+    new color("nes08", 32, 42, 0),  //nes08
+    new color("nes09", 8, 58, 0),   //nes09
+    new color("nes0a", 0, 64, 0),   //nes0a
+    new color("nes0b", 0, 60, 0),   //nes0b
+    new color("nes0e", 0, 50, 60),  //nes0c
+    new color("nes0d", 0, 0, 0),    //nes0d
+    new color("nes0e", 0, 0, 0),    //nes0e
+    new color("nes0f", 0, 0, 0),    //nes0f
+    //nes10
+    //nes11
+    //nes12
+    //nes13
+    //nes14
+    //nes15
+    //nes16
+    //nes17
+    //nes18
+    //nes19
+    //nes1a
+    //nes1b
+    //nes1c
+    new color("nes1d", 0, 0, 0),    //nes1d
+    new color("nes1e", 0, 0, 0),    //nes1e
+    new color("nes1f", 0, 0, 0),    //nes1f
+    //nes20
+    //nes21
+    //nes22
+    //nes23
+    //nes24
+    //nes25
+    //nes26
+    //nes27
+    //nes28
+    //nes29
+    //nes2a
+    //nes2b
+    //nes2c
+    //nes2d
+    new color("nes2e", 0, 0, 0),    //nes2e
+    new color("nes2f", 0, 0, 0),    //nes2f
+    //nes30
+    //nes31
+    //nes32
+    //nes33
+    //nes34
+    //nes35
+    //nes36
+    //nes37
+    //nes38
+    //nes39
+    //nes3a
+    //nes3b
+    //nes3c
+    //nes3d
+    new color("nes3e", 0, 0, 0),    //nes3e
+    new color("nes3f", 0, 0, 0)     //nes3f
+];
+
+
+
 //Basic JavaScript HTMLElements 
 let pixel_guide = $("#pixel-guide");
 let art_section = $("#art-section");
@@ -121,6 +201,7 @@ let new_project_name_input = $("#new-project-name-input");
 let console_select = <HTMLSelectElement>document.getElementById("console-select");
 let modal_content_new = $("#modal-content-new");
 let trifold_holder = $("#trifold-holder");
+let color_picker_container = $("#color-picker-container");
 
 /*
     Working Variables 
@@ -338,8 +419,24 @@ function setChosenColor(button: HTMLElement) {
 }
 
 function openColorPicker(button: HTMLElement) {
-    $("#nes-color-picker").css("left", button.getBoundingClientRect().left);
-    $("#nes-color-picker").css("top", button.getBoundingClientRect().top);
+    var colorPickerLeft = button.getBoundingClientRect().left;
+    var colorPickerTop = button.getBoundingClientRect().top + button.clientHeight + 15;
+
+    color_picker_container.css("display", "block");
+    switch (workingProject.projectConsole.name) {
+        case "NES":
+            $("#nes-color-picker").css("left", colorPickerLeft);
+            $("#nes-color-picker").css("top", colorPickerTop);
+            $("#nes-color-picker").css("display", "block");
+            break;
+        case "SNES":
+            break;
+        case "Game Boy":
+            break;
+        case "Game Boy Color":
+            break;
+    }
+
 }
 
 //function setChosenColor(button: JQuery<HTMLElement>) {
@@ -418,4 +515,14 @@ $("#color-palette-holder").on("contextmenu", ".color-button", function () {
     //var button = $("this");
     //openColorPicker(button);
     openColorPicker(this);
+})
+
+//  (Event Handler)
+//  Closes the color picker when you click outside of it 
+$(window).on("click", function (event) {
+    var $target = $(event.target);
+    if (!$target.closest(color_picker_container).length &&
+        color_picker_container.css("display") == "block") {
+        color_picker_container.css("display", "none");
+    }
 })

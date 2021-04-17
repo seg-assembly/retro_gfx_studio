@@ -44,7 +44,7 @@ var color = /** @class */ (function () {
         var values = rgb.split(" ");
         this.setColor(parseInt(values[0]), parseInt(values[1]), parseInt(values[2]));
         //Test log  
-        console.log(this.getRGB);
+        console.log(this.getRGB());
     };
     color.prototype.getRGB = function () {
         return this.rgbColorString;
@@ -96,6 +96,7 @@ var new_project_name_input = $("#new-project-name-input");
 var console_select = document.getElementById("console-select");
 var modal_content_new = $("#modal-content-new");
 var trifold_holder = $("#trifold-holder");
+var color_picker_container = $("#color-picker-container");
 /*
     Working Variables
 */
@@ -282,12 +283,25 @@ function renderPixelCanvas() {
     pixel_guide.css("height", (pixelSizeSkew - 2).toString() + "px");
 }
 function setChosenColor(button) {
-    console.log(button.style.backgroundColor);
     chosenColor.setColorByRGB(button.style.backgroundColor);
 }
 function openColorPicker(button) {
-    $("#nes-color-picker").css("left", button.getBoundingClientRect().left);
-    $("#nes-color-picker").css("top", button.getBoundingClientRect().top);
+    var colorPickerLeft = button.getBoundingClientRect().left;
+    var colorPickerTop = button.getBoundingClientRect().top + button.clientHeight + 15;
+    color_picker_container.css("display", "block");
+    switch (workingProject.projectConsole.name) {
+        case "NES":
+            $("#nes-color-picker").css("left", colorPickerLeft);
+            $("#nes-color-picker").css("top", colorPickerTop);
+            $("#nes-color-picker").css("display", "block");
+            break;
+        case "SNES":
+            break;
+        case "Game Boy":
+            break;
+        case "Game Boy Color":
+            break;
+    }
 }
 //function setChosenColor(button: JQuery<HTMLElement>) {
 //    alert(button.css("background-color"));
@@ -354,4 +368,13 @@ $("#color-palette-holder").on("contextmenu", ".color-button", function () {
     //var button = $("this");
     //openColorPicker(button);
     openColorPicker(this);
+});
+//  (Event Handler)
+//  Closes the color picker when you click outside of it 
+$(window).on("click", function (event) {
+    var $target = $(event.target);
+    if (!$target.closest(color_picker_container).length &&
+        color_picker_container.css("display") == "block") {
+        color_picker_container.css("display", "none");
+    }
 });
