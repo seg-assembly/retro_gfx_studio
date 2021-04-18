@@ -1,8 +1,6 @@
 /*Classes*/
 .color-picker {
   position: absolute;
-  height: 100px;
-  width: 100px;
   background-color: cadetblue;
   z-index: 999;
   display: none;
@@ -19,7 +17,18 @@
   border-bottom: 15px solid black;
 }
 
+.color-picker-button-grid {
+  display: grid;
+  grid: auto / repeat(16, auto);
+  gap: 2px;
+}
+
+.color-picker-button {
+  width: 25px;
+  height: 25px;
+}
+
 /*IDs*/
-#color-holder-container{
+#color-holder-container {
   display: none;
 }

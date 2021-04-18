@@ -23,15 +23,24 @@ var tile = /** @class */ (function () {
     return tile;
 }());
 var color = /** @class */ (function () {
-    function color() {
-        this.red;
-        this.green;
-        this.blue;
+    function color(colorID, red, green, blue) {
+        if (colorID === void 0) { colorID = null; }
+        if (red === void 0) { red = null; }
+        if (green === void 0) { green = null; }
+        if (blue === void 0) { blue = null; }
+        this.colorID = colorID;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.setColorString();
     }
     color.prototype.setColor = function (r, g, b) {
         this.red = r;
         this.green = g;
         this.blue = b;
+        this.setColorString();
+    };
+    color.prototype.setColorString = function () {
         this.rgbColorString = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
     };
     color.prototype.setColorByRGB = function (rgb) {
@@ -65,6 +74,9 @@ var gameConsole = /** @class */ (function () {
     }
     return gameConsole;
 }());
+/*
+    Data
+*/
 var consoleList = [
     {
         name: "NES",
@@ -82,6 +94,80 @@ var consoleList = [
         name: "Game Boy Color",
         colorPaletteLimit: 4
     }
+];
+//All the Colors the NES can handle 
+var nesColors = [
+    new color("nes00", 84, 84, 84),
+    new color("nes01", 0, 30, 116),
+    new color("nes02", 8, 16, 144),
+    new color("nes03", 48, 0, 136),
+    new color("nes04", 68, 0, 100),
+    new color("nes05", 92, 0, 48),
+    new color("nes06", 84, 4, 0),
+    new color("nes07", 60, 24, 0),
+    new color("nes08", 32, 42, 0),
+    new color("nes09", 8, 58, 0),
+    new color("nes0a", 0, 64, 0),
+    new color("nes0b", 0, 60, 0),
+    new color("nes0e", 0, 50, 60),
+    new color("nes0d", 0, 0, 0),
+    new color("nes0e", 0, 0, 0),
+    new color("nes0f", 0, 0, 0),
+    new color("nes10", 152, 150, 152),
+    new color("nes11", 8, 76, 196),
+    new color("nes12", 48, 50, 236),
+    new color("nes13", 92, 30, 228),
+    new color("nes14", 136, 20, 176),
+    new color("nes15", 160, 20, 100),
+    new color("nes16", 152, 34, 32),
+    new color("nes17", 120, 60, 0),
+    new color("nes18", 84, 90, 0),
+    new color("nes19", 40, 114, 0),
+    new color("nes1a", 8, 124, 0),
+    new color("nes1b", 0, 118, 40),
+    new color("nes1c", 0, 102, 120),
+    new color("nes1d", 0, 0, 0),
+    new color("nes1e", 0, 0, 0),
+    new color("nes1f", 0, 0, 0),
+    new color("nes20", 236, 238, 236),
+    new color("nes21", 76, 154, 236),
+    new color("nes22", 120, 124, 236),
+    new color("nes23", 176, 98, 236),
+    new color("nes24", 228, 84, 236),
+    new color("nes25", 236, 88, 180),
+    new color("nes26", 236, 106, 100),
+    new color("nes27", 212, 136, 32),
+    new color("nes28", 160, 170, 0),
+    new color("nes29", 116, 196, 0),
+    new color("nes2a", 76, 208, 32),
+    new color("nes2b", 56, 204, 108),
+    new color("nes2c", 56, 280, 204),
+    new color("nes2d", 60, 60, 60),
+    new color("nes2e", 0, 0, 0),
+    new color("nes2f", 0, 0, 0),
+    new color("nes30", 236, 238, 236),
+    new color("nes31", 168, 204, 236),
+    new color("nes32", 188, 188, 236),
+    new color("nes33", 212, 178, 236),
+    new color("nes34", 236, 174, 236),
+    new color("nes35", 236, 174, 212),
+    new color("nes36", 236, 180, 176),
+    new color("nes37", 228, 196, 144),
+    new color("nes38", 204, 210, 120),
+    new color("nes39", 180, 222, 120),
+    new color("nes3a", 168, 226, 144),
+    new color("nes3b", 152, 226, 180),
+    new color("nes3c", 160, 214, 228),
+    new color("nes3d", 160, 162, 160),
+    new color("nes3e", 0, 0, 0),
+    new color("nes3f", 0, 0, 0) //nes3f
+];
+//All the colors the Game Boy can handle (all 4 of them!)
+var gbColors = [
+    new color("gb11", 15, 56, 15),
+    new color("gb10", 48, 98, 48),
+    new color("gb01", 139, 172, 15),
+    new color("gb00", 155, 188, 15)
 ];
 //Basic JavaScript HTMLElements 
 var pixel_guide = $("#pixel-guide");
@@ -124,6 +210,8 @@ jQuery(function () {
     console.log(chosenColor.getRGB());
     console.log(consoleList);
     console.log(console_select.options);
+    nesColorPopulation();
+    gameBoyColorPopulation();
 });
 /*
     Functions
@@ -184,6 +272,24 @@ function constructColorPaletteBox(passColorPalette) {
     colorPaletteBox.appendChild(colorPaletteGrid);
     //Returns the Color Palette Box 
     return colorPaletteBox;
+}
+function nesColorPopulation() {
+    nesColors.forEach(function (element) {
+        var nesColorSquare = document.createElement("button");
+        nesColorSquare.style.backgroundColor = element.getRGB();
+        nesColorSquare.style.borderColor = element.getRGB();
+        nesColorSquare.classList.add("color-picker-button");
+        $("#nes-color-picker").children(".color-picker-button-grid").append(nesColorSquare);
+    });
+}
+function gameBoyColorPopulation() {
+    gbColors.forEach(function (element) {
+        var gbColorSquare = document.createElement("button");
+        gbColorSquare.style.backgroundColor = element.getRGB();
+        gbColorSquare.style.borderColor = element.getRGB();
+        gbColorSquare.classList.add("color-picker-button");
+        $("#gb-color-picker").children(".color-picker-button-grid").append(gbColorSquare);
+    });
 }
 /*
 *   (Function)
@@ -298,6 +404,9 @@ function openColorPicker(button) {
         case "SNES":
             break;
         case "Game Boy":
+            $("#gb-color-picker").css("left", colorPickerLeft);
+            $("#gb-color-picker").css("top", colorPickerTop);
+            $("#gb-color-picker").css("display", "block");
             break;
         case "Game Boy Color":
             break;
@@ -326,8 +435,6 @@ canvas_holder.on("mousemove", function (e) {
     pixelGuideTopPosition = Math.floor(mouseY / pixelSizeSkew) * pixelSizeSkew;
     mousePixelX = pixelGuideLeftPosition / pixelSizeSkew;
     mousePixelY = pixelGuideTopPosition / pixelSizeSkew;
-    //console.log("mousePixelX: " + mousePixelX);
-    //console.log("mousePixelY: " + mousePixelY);
     pixel_guide.css("left", pixelGuideLeftPosition + "px");
     pixel_guide.css("top", pixelGuideTopPosition + "px");
 });
@@ -358,15 +465,13 @@ $("#color-palette-holder").on("change", ".color-palette-name", function () {
 //  (Event Handler)
 //  .color-buttons LMB 
 $("#color-palette-holder").on("click", ".color-button", function () {
-    //var button = $("this");
-    //setChosenColor(button);
     setChosenColor(this);
 });
 //  (Event Handler)
 //  .color-buttons RMB  
 $("#color-palette-holder").on("contextmenu", ".color-button", function () {
-    //var button = $("this");
-    //openColorPicker(button);
+    $(".choosing-button").removeClass("choosing-button");
+    $(this).addClass("choosing-button");
     openColorPicker(this);
 });
 //  (Event Handler)
@@ -376,5 +481,10 @@ $(window).on("click", function (event) {
     if (!$target.closest(color_picker_container).length &&
         color_picker_container.css("display") == "block") {
         color_picker_container.css("display", "none");
+        $(".choosing-button").removeClass("choosing-button");
     }
+});
+$(".color-picker").on("click", ".color-picker-button", function () {
+    var newColor = $(this).css("background-color");
+    $(".choosing-button").css("background-color", newColor);
 });
