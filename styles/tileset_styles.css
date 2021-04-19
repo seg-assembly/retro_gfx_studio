@@ -1,3 +1,24 @@
+/*ID Styles*/
+#tileset-section {
+    display: flex;
+    flex-direction: column;
+}
+
 #add-tile-button {
     float: right;
+}
+
+#tile-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+/*Class Styles*/
+.tile-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 0%;
+    border-style: none;
 }

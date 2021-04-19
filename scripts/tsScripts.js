@@ -17,8 +17,7 @@ var project = /** @class */ (function () {
     return project;
 }());
 var tile = /** @class */ (function () {
-    function tile(tileID) {
-        this.tileID = tileID;
+    function tile() {
     }
     return tile;
 }());
@@ -52,8 +51,6 @@ var color = /** @class */ (function () {
         //Splits the rgb values into three substrings for r, g, and b 
         var values = rgb.split(" ");
         this.setColor(parseInt(values[0]), parseInt(values[1]), parseInt(values[2]));
-        //Test log  
-        console.log(this.getRGB());
     };
     color.prototype.getRGB = function () {
         return this.rgbColorString;
@@ -183,6 +180,7 @@ var console_select = document.getElementById("console-select");
 var modal_content_new = $("#modal-content-new");
 var trifold_holder = $("#trifold-holder");
 var color_picker_container = $("#color-picker-container");
+var tile_grid = $("#tile-grid");
 /*
     Working Variables
 */
@@ -200,13 +198,14 @@ var pixelGuideTopPosition;
 var chosenColor;
 var workingProject;
 var workingDirectory;
+var workingTileIndex = null;
 /*
     Init
 */
 jQuery(function () {
     chosenColor = new color();
     changeActiveColor(5, 5, 5);
-    renderPixelCanvas();
+    //renderPixelCanvas();
     console.log(chosenColor.getRGB());
     console.log(consoleList);
     console.log(console_select.options);
@@ -234,7 +233,7 @@ function closeHeader() {
 function addColorPalette() {
     if (workingProject != null) {
         workingProject.projectColorPalettes.push(new colorPalette);
-        console.log(workingProject.projectColorPalettes);
+        //console.log(workingProject.projectColorPalettes);
         color_palette_holder.append(constructColorPaletteBox());
     }
 }
@@ -272,6 +271,29 @@ function constructColorPaletteBox(passColorPalette) {
     colorPaletteBox.appendChild(colorPaletteGrid);
     //Returns the Color Palette Box 
     return colorPaletteBox;
+}
+//  (Function)
+//  Adds a tile to the working project and a tile button to boot
+function addTile() {
+    if (workingProject != null) {
+        workingProject.projectTiles.push(new tile);
+        console.log(workingProject.projectTiles);
+        tile_grid.append(constructTile());
+    }
+}
+function constructTile(passTile) {
+    if (passTile === void 0) { passTile = null; }
+    var newTile = document.createElement("button");
+    newTile.classList.add("tile-button");
+    //var tileCanvas: HTMLElement = document.createElement("canvas");
+    //tileCanvas.classList.add("tile-canvas");
+    //tileCanvas.style.backgroundColor = "rgb(0,0,0)";
+    //newTile.append(tileCanvas);
+    if (passTile != null) {
+    }
+    else {
+    }
+    return newTile;
 }
 function nesColorPopulation() {
     nesColors.forEach(function (element) {
@@ -323,6 +345,8 @@ function createProject() {
     trifold_holder.css("pointerEvents", "all");
     console.log(workingProject);
 }
+//  (Function)
+//  
 function initiateSave() {
     if (workingDirectory == null && workingProject != null) {
         chooseProjectDirectory();
@@ -331,6 +355,8 @@ function initiateSave() {
         saveProjectNewDirectory();
     }
 }
+//  (Function)
+//  
 function chooseProjectDirectory() {
     dialog.showOpenDialog({
         title: "Save project where...",
@@ -346,6 +372,8 @@ function chooseProjectDirectory() {
         saveProjectNewDirectory();
     });
 }
+//  (Function)
+//  
 function saveProjectNewDirectory() {
     if (!fs.existsSync(workingDirectory)) {
         fs.mkdir(workingDirectory, { recursive: false }, function (err) {
@@ -365,13 +393,21 @@ function saveProjectNewDirectory() {
         saveProject();
     }
 }
+//  (Function)
+//  
 function saveProject() {
     fs.writeFileSync(path.join(workingDirectory, workingProject.name + ".rgsproj"), JSON.stringify(workingProject));
 }
+//  (Function)
+//  
 function openProject() {
 }
+//  (Function)
+//  
 function loadProject() {
 }
+//  (Function)
+//  Draws a pixel to the active canvas 
 function plotPixel() {
     var paintLeft = mousePixelX * pixelSizeSkew;
     var paintTop = mousePixelY * pixelSizeSkew;
@@ -382,15 +418,36 @@ function plotPixel() {
     drawing.fillStyle = chosenColor.getRGB();
     drawing.fillRect(paintLeft, paintTop, pixelSizeSkew, pixelSizeSkew);
 }
-function renderPixelCanvas() {
+function saveDrawingToProject() {
+    var data = pixel_canvas.toDataURL();
+    workingProject.projectTiles[workingTileIndex].imageData = data;
+}
+//  (Function)
+//  Sets the width and height of the pixel_canvas and the pixel_guide 
+function renderPixelCanvas(imageURL) {
+    if (imageURL === void 0) { imageURL = null; }
     pixel_canvas.setAttribute("width", (pixelSizeSkew * pixelArtWidth).toString() + "px");
     pixel_canvas.setAttribute("height", (pixelSizeSkew * pixelArtHeight).toString() + "px");
     pixel_guide.css("width", (pixelSizeSkew - 2).toString() + "px");
     pixel_guide.css("height", (pixelSizeSkew - 2).toString() + "px");
+    pixel_canvas.style.display = "block";
+    drawPixelCanvasImage(imageURL);
 }
+// (Function)
+//  
+function drawPixelCanvasImage(imageURL) {
+    var drawing = pixel_canvas.getContext("2d");
+    var img = new Image;
+    img.src = imageURL;
+    drawing.drawImage(img, 0, 0);
+}
+//  (Function)
+//  
 function setChosenColor(button) {
     chosenColor.setColorByRGB(button.style.backgroundColor);
 }
+//  (Function)
+//  Opens the color picker for the appropriate console 
 function openColorPicker(button) {
     var colorPickerLeft = button.getBoundingClientRect().left;
     var colorPickerTop = button.getBoundingClientRect().top + button.clientHeight + 15;
@@ -412,22 +469,21 @@ function openColorPicker(button) {
             break;
     }
 }
-//function setChosenColor(button: JQuery<HTMLElement>) {
-//    alert(button.css("background-color"));
-//}
-//function openColorPicker(button: JQuery<HTMLElement>) {
-//    $("#nes-color-picker").css("left", button.position().left);
-//    $("#nes-color-picker").css("top", button.position().top);
-//}
 /*
     Event Listeners
 */
+//  (Event Handler)
+//  Shows the pixel_guide when the mouse enters the pixel_canvas 
 canvas_holder.on("mouseenter", function (e) {
     pixel_guide.css("display", "block");
 });
+//  (Event Handler)
+//  Hides the pixel_guide when the mouse leaves the pixel_canvas 
 canvas_holder.on("mouseleave", function (e) {
     pixel_guide.css("display", "none");
 });
+//  (Event Handler)
+//  Changes the position of the pixel_guide to match up to the mouse's location 
 canvas_holder.on("mousemove", function (e) {
     mouseX = e.clientX - pixel_canvas.getBoundingClientRect().left;
     mouseY = e.clientY - pixel_canvas.getBoundingClientRect().top;
@@ -438,8 +494,11 @@ canvas_holder.on("mousemove", function (e) {
     pixel_guide.css("left", pixelGuideLeftPosition + "px");
     pixel_guide.css("top", pixelGuideTopPosition + "px");
 });
+//  (Event Handler)
+//  Draws a pixel to canvas when clicked 
 canvas_holder.on("click", function () {
     plotPixel();
+    saveDrawingToProject();
 });
 //  (Event Handler)
 //  Makes sure the Project has a name and console before creating allowing creation 
@@ -484,7 +543,16 @@ $(window).on("click", function (event) {
         $(".choosing-button").removeClass("choosing-button");
     }
 });
+//  (Event Handler)
+//  Sets the color of the color button when you choose a color in the color picker 
 $(".color-picker").on("click", ".color-picker-button", function () {
     var newColor = $(this).css("background-color");
     $(".choosing-button").css("background-color", newColor);
+});
+//  (Event Handler)
+//  Sets the pixel grid and the workingTile to tile associated with the tile-button 
+$("#tile-grid").on("click", ".tile-button", function () {
+    console.log($(this).index());
+    workingTileIndex = $(this).index();
+    renderPixelCanvas(workingProject.projectTiles[workingTileIndex].imageData);
 });
