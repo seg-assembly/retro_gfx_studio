@@ -1,29 +1,44 @@
+/*IDs*/
 #color-section {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: grey;
 }
 
 #add-color-palette-button {
-    float: right;
+  float: right;
 }
 
+#color-palette-holder {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+/*Classes*/
 .color-palette-box {
-    background-color: coral;
-    height: 60px;
-    display: flex;
-    flex-direction: column;
+  background-color: coral;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding: 4px;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: aliceblue;
 }
 
 .color-palette-name {
-    flex: 1;
+  flex: 1;
 }
 
 .color-palette-grid {
-    display: flex;
-    flex: 2;
-    gap: 5px;
+  display: flex;
+  flex: 2;
+  gap: 5px;
+  margin-top: 2px;
 }
 
 .color-button {
-    flex: 1;
+  flex: 1;
 }

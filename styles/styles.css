@@ -28,11 +28,8 @@
   flex-direction: row;
   height: auto;
   flex: 14;
-}
-
-#color-section {
-  flex: 1;
-  background-color: aquamarine;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 #art-section {
@@ -66,9 +63,5 @@
 
 #tileset-section {
   flex: 1;
-  background-color: darksalmon;
-}
-
-#trifold-holder {
-  pointer-events: none;
+  background-color: lightgray;
 }

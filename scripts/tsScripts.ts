@@ -22,6 +22,7 @@ class project {
 
 class tile {
     imageData: string;
+    tilePaletteID: number;
 
     constructor() {
     }
@@ -536,6 +537,10 @@ function openColorPicker(button: HTMLElement) {
             break;
     }
 
+}
+
+function testFunction() {
+    alert("Guess What!");
 }
 
 /*

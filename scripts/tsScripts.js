@@ -431,6 +431,7 @@ function renderPixelCanvas(imageURL) {
     pixel_guide.css("width", (pixelSizeSkew - 2).toString() + "px");
     pixel_guide.css("height", (pixelSizeSkew - 2).toString() + "px");
     pixel_canvas.style.display = "block";
+    pixel_guide.css("display", "block");
     drawPixelCanvasImage(imageURL);
 }
 // (Function)
@@ -468,6 +469,9 @@ function openColorPicker(button) {
         case "Game Boy Color":
             break;
     }
+}
+function testFunction() {
+    alert("Guess What!");
 }
 /*
     Event Listeners

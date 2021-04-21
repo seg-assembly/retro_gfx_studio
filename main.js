@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 
 function createWindow () {
@@ -19,9 +19,25 @@ function createWindow () {
 app.whenReady().then(() => {
   createWindow()
 
+  //const menu = Menu.buildFromTemplate(menuTemplate);
+  //Menu.setApplicationMenu(menu);
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
     }
   })
 })
+
+const menuTemplate = [
+  {
+    "label": "Retro Graphics Studio",
+    submenu: [
+      {
+        label: "About Retro Graphics Studio",
+        click: () => {
+        }
+      }
+    ]
+  }
+]
