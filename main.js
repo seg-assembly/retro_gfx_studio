@@ -36,6 +36,9 @@ const menuTemplate = [
     submenu: [
       {
         label: "New Project",
+        click: (item, focusedWindow) => {
+          focusedWindow.webContents.send("new-project");
+        }
       },
       {
         type: "separator",

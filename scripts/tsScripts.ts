@@ -645,3 +645,8 @@ $("#tile-grid").on("click", ".tile-button", function() {
     workingTileIndex = $(this).index();
     renderPixelCanvas(workingProject.projectTiles[workingTileIndex].imageData);
 })
+
+
+electron.ipcRenderer.on("new-project", function () {
+    openNewHeader();
+}) 
