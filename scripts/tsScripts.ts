@@ -1,6 +1,7 @@
 import * as electron from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
+//import {project, tile, color, colorPalette, gameConsole} from './classes';
 const dialog = electron.remote.dialog;
 
 /*
@@ -91,7 +92,6 @@ class gameConsole {
         this.colorPaletteLimit = colorPaletteLimit;
     }
 }
-
 /* 
     Data 
 */
@@ -264,6 +264,7 @@ function closeHeader() {
 function addColorPalette() {
     if (workingProject != null) {
         workingProject.projectColorPalettes.push(new colorPalette);
+        var index = workingProject.projectColorPalettes.length - 1;
         //console.log(workingProject.projectColorPalettes);
 
         color_palette_holder.append(constructColorPaletteBox());
@@ -319,11 +320,11 @@ function addTile() {
         workingProject.projectTiles.push(new tile);
         console.log(workingProject.projectTiles);
 
-        tile_grid.append(constructTile());
+        tile_grid.append(constructTileBox());
     }
 }
 
-function constructTile(passTile: tile = null): HTMLElement {
+function constructTileBox(passTile: tile = null): HTMLElement {
     var newTile: HTMLElement = document.createElement("button");
     newTile.classList.add("tile-button");
 
@@ -632,7 +633,9 @@ $(window).on("click", function (event) {
 //  Sets the color of the color button when you choose a color in the color picker 
 $(".color-picker").on("click", ".color-picker-button", function () {
     var newColor = $(this).css("background-color");
-    $(".choosing-button").css("background-color", newColor);
+    var choosingButton = $(".choosing-button");
+    
+    choosingButton.css("background-color", newColor);
 })
 
 //  (Event Handler)

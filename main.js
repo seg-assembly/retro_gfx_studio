@@ -1,7 +1,7 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 
-function createWindow () {
+function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 900,
@@ -19,8 +19,9 @@ function createWindow () {
 app.whenReady().then(() => {
   createWindow()
 
-  //const menu = Menu.buildFromTemplate(menuTemplate);
-  //Menu.setApplicationMenu(menu);
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
+
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -31,13 +32,76 @@ app.whenReady().then(() => {
 
 const menuTemplate = [
   {
-    "label": "Retro Graphics Studio",
+    label: "Flie",
     submenu: [
       {
-        label: "About Retro Graphics Studio",
-        click: () => {
-        }
+        label: "New Project",
+      },
+      {
+        type: "separator",
+      },
+      {
+        label: "Open Project",
+      },
+      {
+        type: "separator",
+      },
+      {
+        label: "Save Project",
+      }
+    ]
+  },
+  {
+    label: "Developer",
+    submenu: [
+      {
+        role: "toggleDevTools"
       }
     ]
   }
 ]
+
+if (process.platform == "darwin") {
+  menuTemplate.unshift({
+    "label": "Retro Graphics Studio",
+    submenu: [
+      {
+        label: "About Retro Graphics Studio",
+        role: "about"
+      },
+      {
+        type: "separator",
+      },
+      {
+        label: "Services",
+        role: "services",
+        submenu: [],
+      },
+      {
+        type: "separator",
+      },
+      {
+        label: "Hide Retro Graphics Studio",
+        accelerator: 'Command+H',
+        role: "hide",
+      },
+      {
+        label: "Hide Others",
+        accelerator: 'Command+Alt+H',
+        role: "hideothers",
+      },
+      {
+        label: "Show All",
+        role: "unhide",
+      },
+      {
+        type: "separator",
+      },
+      {
+        label: `Quit Retro Graphics Studio`,
+        accelerator: 'Command+Q',
+        click() { app.quit(); },
+      },
+    ]
+  })
+}

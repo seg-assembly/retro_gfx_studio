@@ -3,6 +3,7 @@ exports.__esModule = true;
 var electron = require("electron");
 var path = require("path");
 var fs = require("fs");
+//import {project, tile, color, colorPalette, gameConsole} from './classes';
 var dialog = electron.remote.dialog;
 /*
     Classes
@@ -233,6 +234,7 @@ function closeHeader() {
 function addColorPalette() {
     if (workingProject != null) {
         workingProject.projectColorPalettes.push(new colorPalette);
+        var index = workingProject.projectColorPalettes.length - 1;
         //console.log(workingProject.projectColorPalettes);
         color_palette_holder.append(constructColorPaletteBox());
     }
@@ -278,10 +280,10 @@ function addTile() {
     if (workingProject != null) {
         workingProject.projectTiles.push(new tile);
         console.log(workingProject.projectTiles);
-        tile_grid.append(constructTile());
+        tile_grid.append(constructTileBox());
     }
 }
-function constructTile(passTile) {
+function constructTileBox(passTile) {
     if (passTile === void 0) { passTile = null; }
     var newTile = document.createElement("button");
     newTile.classList.add("tile-button");
@@ -551,7 +553,8 @@ $(window).on("click", function (event) {
 //  Sets the color of the color button when you choose a color in the color picker 
 $(".color-picker").on("click", ".color-picker-button", function () {
     var newColor = $(this).css("background-color");
-    $(".choosing-button").css("background-color", newColor);
+    var choosingButton = $(".choosing-button");
+    choosingButton.css("background-color", newColor);
 });
 //  (Event Handler)
 //  Sets the pixel grid and the workingTile to tile associated with the tile-button 
