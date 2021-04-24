@@ -45,12 +45,18 @@ const menuTemplate = [
       },
       {
         label: "Open Project",
+        click: (item, focusedWindow) => {
+          focusedWindow.webContents.send("open-project");
+        }
       },
       {
         type: "separator",
       },
       {
         label: "Save Project",
+        click: (item, focusedWindow) => {
+          focusedWindow.webContents.send("save-project");
+        }
       }
     ]
   },
@@ -59,6 +65,12 @@ const menuTemplate = [
     submenu: [
       {
         role: "toggleDevTools"
+      },
+      {
+        label: "Print Working Project",
+        click: (item, focusedWindow) => {
+          focusedWindow.webContents.send("print-working-project");
+        }
       }
     ]
   }

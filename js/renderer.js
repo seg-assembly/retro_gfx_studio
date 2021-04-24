@@ -1,102 +1,17 @@
-import * as electron from 'electron';
-import * as path from 'path';
-import * as fs from 'fs';
-//import {project, tile, color, colorPalette, gameConsole} from './classes';
+//Imports 
+const electron = require('electron');
+const path = require('path');
+const fs = require('fs');
+window.$ = window.jQuery = require('jquery');
+const {project, tile, color, colorPalette, gameConsole} = require('./js/classes.js');
+
+//Const Definitions 
 const dialog = electron.remote.dialog;
 
 /*
-    Classes 
-*/
-class project {
-    name: string;
-    projectConsole: gameConsole;
-    projectColorPalettes: colorPalette[];
-    projectTiles: tile[];
-
-    constructor(name: string, projectConsole: gameConsole) {
-        this.name = name;
-        this.projectConsole = projectConsole;
-        this.projectColorPalettes = [];
-        this.projectTiles = [];
-    }
-}
-
-class tile {
-    imageData: string;
-    tilePaletteID: number;
-
-    constructor() {
-    }
-}
-
-class color {
-    colorID: string;
-    red: number;
-    green: number;
-    blue: number;
-    rgbColorString: string;
-
-    constructor(colorID: string = null, red: number = null, green: number = null, blue: number = null) {
-        this.colorID = colorID;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.setColorString();
-    }
-
-    setColor(r: number, g: number, b: number) {
-        this.red = r;
-        this.green = g;
-        this.blue = b;
-        this.setColorString();
-    }
-
-    setColorString() {
-        this.rgbColorString = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
-    }
-
-    setColorByRGB(rgb: string) {
-        //Removes the rgb string elements from the string to get the rgb values 
-        rgb = rgb.replace("rgb(", "");
-        rgb = rgb.replace(")", "");
-        rgb = rgb.replace(",", "");
-        rgb = rgb.replace(",", "");
-
-        //Splits the rgb values into three substrings for r, g, and b 
-        var values = rgb.split(" ");
-
-        this.setColor(parseInt(values[0]), parseInt(values[1]), parseInt(values[2]));
-    }
-
-    getRGB() {
-        return this.rgbColorString;
-    }
-}
-
-class colorPalette {
-    name: string;
-    colors: color[]
-
-    constructor() {
-        this.name;
-        this.colors = [];
-    }
-}
-
-class gameConsole {
-    name: string;
-    colorPaletteLimit: number;
-
-    constructor(name: string, colorPaletteLimit: number) {
-        this.name = name;
-        this.colorPaletteLimit = colorPaletteLimit;
-    }
-}
-/* 
     Data 
 */
-
-const consoleList: gameConsole[] = [
+const consoleList = [
     {
         name: "NES",
         colorPaletteLimit: 4
@@ -116,7 +31,7 @@ const consoleList: gameConsole[] = [
 ];
 
 //All the Colors the NES can handle 
-const nesColors: color[] = [
+const nesColors = [
     new color("nes00", 84, 84, 84),     //nes00
     new color("nes01", 0, 30, 116),     //nes01 
     new color("nes02", 8, 16, 144),     //nes02 
@@ -184,7 +99,7 @@ const nesColors: color[] = [
 ];
 
 //All the colors the Game Boy can handle (all 4 of them!)
-const gbColors: color[] = [
+const gbColors = [
     new color("gb11", 15, 56, 15),
     new color("gb10", 48, 98, 48),
     new color("gb01", 139, 172, 15),
@@ -195,13 +110,13 @@ const gbColors: color[] = [
 let pixel_guide = $("#pixel-guide");
 let art_section = $("#art-section");
 let canvas_holder = $("#canvas-holder");
-let pixel_canvas = <HTMLCanvasElement>document.getElementById("pixel-canvas");
+let pixel_canvas = document.getElementById("pixel-canvas");
 let new_button = $("#new-button");
 let modal_holder = $("#modal-holder");
 let modal_close = $("#modal-close");
 let color_palette_holder = $("#color-palette-holder");
 let new_project_name_input = $("#new-project-name-input");
-let console_select = <HTMLSelectElement>document.getElementById("console-select");
+let console_select = document.getElementById("console-select");
 let modal_content_new = $("#modal-content-new");
 let trifold_holder = $("#trifold-holder");
 let color_picker_container = $("#color-picker-container");
@@ -210,21 +125,21 @@ let tile_grid = $("#tile-grid");
 /*
     Working Variables 
 */
-var mouseX: number;
-var mouseY: number;
-var mousePixelX: number;
-var mousePixelY: number;
-var pixelSizeSkew: number = 48;
-var pixelArtHeight: number = 8;
-var pixelArtWidth: number = 8;
-var canvasHolderLeft: number;
-var canvasHolderTop: number;
-var pixelGuideLeftPosition: number;
-var pixelGuideTopPosition: number;
-var chosenColor: color;
-var workingProject: project;
-var workingDirectory: string;
-var workingTileIndex: number = null;
+var mouseX;
+var mouseY;
+var mousePixelX;
+var mousePixelY;
+var pixelSizeSkew = 48;
+var pixelArtHeight = 8;
+var pixelArtWidth = 8;
+var canvasHolderLeft;
+var canvasHolderTop;
+var pixelGuideLeftPosition;
+var pixelGuideTopPosition;
+var chosenColor;
+var workingProject;
+var workingDirectory;
+var workingTileIndex = null;
 
 /*
     Init 
@@ -232,7 +147,6 @@ var workingTileIndex: number = null;
 jQuery(function () {
     chosenColor = new color();
     changeActiveColor(5, 5, 5);
-    //renderPixelCanvas();
     console.log(chosenColor.getRGB());
     console.log(consoleList);
     console.log(console_select.options);
@@ -276,24 +190,24 @@ function addColorPalette() {
 *   (Function) 
 *   Constructs and returns a Color Palette Box 
 */
-function constructColorPaletteBox(passColorPalette: colorPalette = null): HTMLElement {
+function constructColorPaletteBox(passColorPalette = null) {
     //Create the Color Palette Box <div> itself 
-    var colorPaletteBox: HTMLElement = document.createElement("div");
+    var colorPaletteBox = document.createElement("div");
     colorPaletteBox.classList.add("color-palette-box");
 
     //Creates the Color Palette Box Title Text <input>  
-    var colorPaletteBoxTitle: HTMLInputElement = document.createElement("input");
+    var colorPaletteBoxTitle = document.createElement("input");
     colorPaletteBoxTitle.classList.add("color-palette-name");
     colorPaletteBoxTitle.type = "text";
     colorPaletteBoxTitle.placeholder = "Palette #";
 
     //Creates the Color Palette Box Color Grid <div>
-    var colorPaletteGrid: HTMLElement = document.createElement("div");
+    var colorPaletteGrid = document.createElement("div");
     colorPaletteGrid.classList.add("color-palette-grid");
 
     //Adds the color buttons to the color palettes based on the project console color palette limit 
     for (var i = 0; i < workingProject.projectConsole.colorPaletteLimit; i++) {
-        var colorButton: HTMLElement = document.createElement("button");
+        var colorButton = document.createElement("button");
         colorButton.classList.add("color-button");
 
         if (passColorPalette != null) {
@@ -324,9 +238,13 @@ function addTile() {
     }
 }
 
-function constructTileBox(passTile: tile = null): HTMLElement {
-    var newTile: HTMLElement = document.createElement("button");
+function constructTileBox(passTile = null) {
+    var newTile = document.createElement("button");
     newTile.classList.add("tile-button");
+
+    var newTileBox = document.createElement("div");
+    var newTileBoxCanvas = document.createElement("canvas");
+
 
     //var tileCanvas: HTMLElement = document.createElement("canvas");
     //tileCanvas.classList.add("tile-canvas");
@@ -344,7 +262,7 @@ function constructTileBox(passTile: tile = null): HTMLElement {
 
 function nesColorPopulation() {
     nesColors.forEach(element => {
-        var nesColorSquare: HTMLElement = document.createElement("button");
+        var nesColorSquare = document.createElement("button");
         nesColorSquare.style.backgroundColor = element.getRGB();
         nesColorSquare.style.borderColor = element.getRGB();
         nesColorSquare.classList.add("color-picker-button");
@@ -354,7 +272,7 @@ function nesColorPopulation() {
 
 function gameBoyColorPopulation() {
     gbColors.forEach(element => {
-        var gbColorSquare: HTMLElement = document.createElement("button");
+        var gbColorSquare = document.createElement("button");
         gbColorSquare.style.backgroundColor = element.getRGB();
         gbColorSquare.style.borderColor = element.getRGB();
         gbColorSquare.classList.add("color-picker-button");
@@ -367,8 +285,8 @@ function gameBoyColorPopulation() {
 *   Constructs the workingProject from the specifications of the new project dialog 
 */
 function createProject() {
-    var tempProjectName: string = new_project_name_input.val().toString();
-    var tempProjectConsole: gameConsole;
+    var tempProjectName = new_project_name_input.val().toString();
+    var tempProjectConsole;
 
     switch (console_select.selectedIndex) {
         case 1:
@@ -388,7 +306,7 @@ function createProject() {
             break;
     }
 
-    var tempProject: project = new project(tempProjectName, tempProjectConsole);
+    var tempProject = new project(tempProjectName, tempProjectConsole);
     console.log(tempProject);
     closeHeader();
     workingProject = tempProject;
@@ -464,8 +382,8 @@ function loadProject() {
 //  (Function)
 //  Draws a pixel to the active canvas 
 function plotPixel() {
-    var paintLeft: number = mousePixelX * pixelSizeSkew;
-    var paintTop: number = mousePixelY * pixelSizeSkew;
+    var paintLeft = mousePixelX * pixelSizeSkew;
+    var paintTop = mousePixelY * pixelSizeSkew;
 
     console.log(paintLeft);
     console.log(paintTop);
@@ -485,7 +403,7 @@ function saveDrawingToProject() {
 
 //  (Function)
 //  Sets the width and height of the pixel_canvas and the pixel_guide 
-function renderPixelCanvas(imageURL: string = null) {
+function renderPixelCanvas(imageURL = null) {
     pixel_canvas.setAttribute("width", (pixelSizeSkew * pixelArtWidth).toString() + "px");
     pixel_canvas.setAttribute("height", (pixelSizeSkew * pixelArtHeight).toString() + "px");
 
@@ -500,7 +418,7 @@ function renderPixelCanvas(imageURL: string = null) {
 
 // (Function)
 //  
-function drawPixelCanvasImage(imageURL: string) {
+function drawPixelCanvasImage(imageURL) {
     var drawing = pixel_canvas.getContext("2d");
     var img = new Image;
     img.src = imageURL;
@@ -510,13 +428,13 @@ function drawPixelCanvasImage(imageURL: string) {
 
 //  (Function)
 //  
-function setChosenColor(button: HTMLElement) {
+function setChosenColor(button) {
     chosenColor.setColorByRGB(button.style.backgroundColor);
 }
 
 //  (Function)
 //  Opens the color picker for the appropriate console 
-function openColorPicker(button: HTMLElement) {
+function openColorPicker(button) {
     var colorPickerLeft = button.getBoundingClientRect().left;
     var colorPickerTop = button.getBoundingClientRect().top + button.clientHeight + 15;
 
@@ -600,7 +518,7 @@ $("#create-project-button").on("click", function () {
 $("#color-palette-holder").on("change", ".color-palette-name", function () {
     var paletteIndex = $(".color-palette-name").index(this);
     console.log("paletteIndex = " + paletteIndex);
-    workingProject.projectColorPalettes[paletteIndex].name = <string>$(this).val();
+    workingProject.projectColorPalettes[paletteIndex].name = $(this).val().toString();
     console.log("paletteName = " + $(this).val());
 })
 
@@ -646,7 +564,21 @@ $("#tile-grid").on("click", ".tile-button", function() {
     renderPixelCanvas(workingProject.projectTiles[workingTileIndex].imageData);
 })
 
-
+/*
+    Renderer Handoffs (Menu and Such)
+*/
 electron.ipcRenderer.on("new-project", function () {
     openNewHeader();
 }) 
+
+electron.ipcRenderer.on("open-project", function() {
+    
+})
+
+electron.ipcRenderer.on("save-project", function() {
+    initiateSave();
+})
+
+electron.ipcRenderer.on("print-working-project", function() {
+    console.log(workingProject);
+})

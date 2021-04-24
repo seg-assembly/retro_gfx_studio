@@ -1,10 +1,6 @@
-export class project {
-    name: string;
-    projectConsole: gameConsole;
-    projectColorPalettes: colorPalette[];
-    projectTiles: tile[];
+class project {
 
-    constructor(name: string, projectConsole: gameConsole) {
+    constructor(name, projectConsole) {
         this.name = name;
         this.projectConsole = projectConsole;
         this.projectColorPalettes = [];
@@ -12,22 +8,22 @@ export class project {
     }
 }
 
-export class tile {
-    imageData: string;
-    tilePaletteID: number;
+class tile {
+    imageData;
+    tilePaletteID;
 
     constructor() {
     }
 }
 
-export class color {
-    colorID: string;
-    red: number;
-    green: number;
-    blue: number;
-    rgbColorString: string;
+class color {
+    colorID;
+    red;
+    green;
+    blue;
+    rgbColorString;
 
-    constructor(colorID: string = null, red: number = null, green: number = null, blue: number = null) {
+    constructor(colorID = null, red = null, green = null, blue = null) {
         this.colorID = colorID;
         this.red = red;
         this.green = green;
@@ -35,7 +31,7 @@ export class color {
         this.setColorString();
     }
 
-    setColor(r: number, g: number, b: number) {
+    setColor(r, g, b) {
         this.red = r;
         this.green = g;
         this.blue = b;
@@ -46,7 +42,7 @@ export class color {
         this.rgbColorString = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
     }
 
-    setColorByRGB(rgb: string) {
+    setColorByRGB(rgb) {
         //Removes the rgb string elements from the string to get the rgb values 
         rgb = rgb.replace("rgb(", "");
         rgb = rgb.replace(")", "");
@@ -64,9 +60,9 @@ export class color {
     }
 }
 
-export class colorPalette {
-    name: string;
-    colors: color[]
+class colorPalette {
+    name;
+    colors;
 
     constructor() {
         this.name;
@@ -74,12 +70,20 @@ export class colorPalette {
     }
 }
 
-export class gameConsole {
-    name: string;
-    colorPaletteLimit: number;
+class gameConsole {
+    name;
+    colorPaletteLimit;
 
-    constructor(name: string, colorPaletteLimit: number) {
+    constructor(name, colorPaletteLimit) {
         this.name = name;
         this.colorPaletteLimit = colorPaletteLimit;
     }
+}
+
+module.exports = {
+    project,
+    tile,
+    color,
+    colorPalette,
+    gameConsole
 }

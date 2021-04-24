@@ -3,11 +3,6 @@
 <head>
   <meta charset="UTF-8" />
 
-  <!--Libraries-->
-  <script>
-    window.$ = window.jQuery = require("./scripts/libraries/jquery-3.5.1.js");
-  </script>
-
   <!--Styles-->
   <link rel="stylesheet" href="styles/generic_styles.css" />
   <link rel="stylesheet" href="styles/styles.css" />
@@ -45,22 +40,7 @@
       </button>
     </div>
   </div>
-  <div id="control-head">
-    <button id="new-button" class="header-button" onclick="openNewHeader()">
-      New...
-    </button>
-    <button id="save-button" class="header-button" onclick="initiateSave()">
-      Save
-    </button>
-    <button id="open-button" class="header-button">Open</button>
-    <button
-      id="open-button"
-      class="header-button"
-      onClick="console.log(workingProject)"
-    >
-      Print workingProject
-    </button>
-  </div>
+  <div id="control-head"></div>
   <div id="trifold-holder">
     <div id="color-picker-container">
       <div id="nes-color-picker" class="color-picker">
@@ -105,8 +85,5 @@
   </div>
 
   <!--Scripts-->
-  <script>
-    var exports = {};
-  </script>
-  <script src="scripts/tsScripts.js"></script>
+  <script src="./js/renderer.js"></script>
 </body>
