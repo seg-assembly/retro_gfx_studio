@@ -36,6 +36,7 @@ const menuTemplate = [
     submenu: [
       {
         label: "New Project",
+        accelerator: "CommandOrControl+N",
         click: (item, focusedWindow) => {
           focusedWindow.webContents.send("new-project");
         }
@@ -45,6 +46,7 @@ const menuTemplate = [
       },
       {
         label: "Open Project",
+        accelerator: "CommandOrControl+O",
         click: (item, focusedWindow) => {
           focusedWindow.webContents.send("open-project");
         }
@@ -54,9 +56,14 @@ const menuTemplate = [
       },
       {
         label: "Save Project",
+        accelerator: "CommandOrControl+S",
         click: (item, focusedWindow) => {
           focusedWindow.webContents.send("save-project");
         }
+      },
+      {
+        label: "Export Project",
+        accelerator: "Shift+CommandOrControl+E"
       }
     ]
   },

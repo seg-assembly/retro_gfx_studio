@@ -1,5 +1,4 @@
 class project {
-
     constructor(name, projectConsole) {
         this.name = name;
         this.projectConsole = projectConsole;

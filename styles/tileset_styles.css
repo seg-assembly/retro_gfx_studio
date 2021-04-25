@@ -1,24 +1,49 @@
 /*ID Styles*/
 #tileset-section {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 #add-tile-button {
-    float: right;
+  float: right;
 }
 
-#tile-grid {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 2px;
+#art-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 /*Class Styles*/
-.tile-button {
-    width: 32px;
-    height: 32px;
-    border-radius: 0%;
-    border-style: none;
+.art-box {
+    background-color: burlywood;
+    width: auto;
+    height: 100px;
+    display: flex;
+}
+
+.art-box:hover { 
+  cursor: pointer;
+}
+
+.art-box-canvas {
+  background-color: white;
+  margin: 20px;
+  margin-left: 10px;
+}
+
+.art-palette-color-holder {
+  width: 50%;
+  display: grid;
+  grid: auto auto / auto auto;
+  gap: 2px;
+  margin: 2px;
+}
+
+.art-palette-color-box {
+  height: 100%;
+  width: 100%;
+  background-color: aqua;
 }
