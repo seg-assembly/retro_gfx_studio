@@ -1,3 +1,14 @@
+const emptyBitMap = [
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+    [00,00,00,00,00,00,00,00],
+]
+
 class project {
     constructor(name, projectConsole) {
         this.name = name;
@@ -9,9 +20,11 @@ class project {
 
 class tile {
     imageData;
-    tilePaletteID;
+    tilePaletteID = new String;
+    tileBits = [[]];
 
     constructor() {
+        this.tileBits = emptyBitMap;
     }
 }
 
