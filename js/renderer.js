@@ -3,11 +3,13 @@ const electron = require('electron');
 const path = require('path');
 const fs = require('fs');
 window.$ = window.jQuery = require('jquery');
-const {project, tile, color, colorPalette, gameConsole} = require('./js/classes.js');
+const {project, tile, art, color, colorPalette, gameConsole} = require('./js/classes.js');
 const {consoleList, nesColors, gbColors} = require('./js/data.js');
 
 //Const Definitions 
 const dialog = electron.remote.dialog;
+const colorPalette2BitStrings = ["00", "01", "10", "11"];
+const colorPalette3BitStrings = ["000", "001", "010", "011", "100", "101", "110", "111"];
 
 //Basic JavaScript HTMLElements 
 let pixel_guide = $("#pixel-guide");
@@ -42,19 +44,15 @@ var pixelGuideTopPosition;
 var chosenColor;
 var workingProject;
 var workingDirectory;
-var workingTileIndex = null;
+var workingArtIndex = null;
+var bitBrush = null;
 
 /*
     Init 
 */
 jQuery(function () {
     chosenColor = new color();
-    //changeActiveColor(5, 5, 5);
-    //console.log(chosenColor.getRGB());
-    //console.log(consoleList);
-    //console.log(console_select.options);
     nesColorPopulation();
-    gameBoyColorPopulation();
 })
 
 /*
@@ -98,11 +96,22 @@ function constructColorPaletteBox(passColorPalette = null) {
     var colorPaletteBox = document.createElement("div");
     colorPaletteBox.classList.add("color-palette-box");
 
+    var colorPaletteBoxHeadHolder = document.createElement("div");
+    colorPaletteBoxHeadHolder.classList.add("color-palette-box-head-holder");
+
     //Creates the Color Palette Box Title Text <input>  
     var colorPaletteBoxTitle = document.createElement("input");
     colorPaletteBoxTitle.classList.add("color-palette-name");
     colorPaletteBoxTitle.type = "text";
     colorPaletteBoxTitle.placeholder = "Palette #";
+
+    var colorPaletteCheckBox = document.createElement("input");
+    colorPaletteCheckBox.classList.add("color-palette-check-box");
+    colorPaletteCheckBox.type = "checkbox";
+
+
+    colorPaletteBoxHeadHolder.appendChild(colorPaletteBoxTitle);
+    colorPaletteBoxHeadHolder.appendChild(colorPaletteCheckBox);
 
     //Creates the Color Palette Box Color Grid <div>
     var colorPaletteGrid = document.createElement("div");
@@ -110,20 +119,34 @@ function constructColorPaletteBox(passColorPalette = null) {
 
     //Adds the color buttons to the color palettes based on the project console color palette limit 
     for (var i = 0; i < workingProject.projectConsole.colorPaletteLimit; i++) {
-        var colorButton = document.createElement("button");
-        colorButton.classList.add("color-button");
 
+        //Element creation for each color of the color Palette 
+        var colorButtonHolder = document.createElement("div");
+        var colorButton = document.createElement("button");
+        var colorButtonBitLabel = document.createElement("p");
+
+        //Class Assigning 
+        colorButtonHolder.classList.add("color-button-holder");
+        colorButton.classList.add("color-button");
+        colorButtonBitLabel.classList.add("color-button-bit-label");
+
+        //If a color is passed in (i.e. a project was opened), it would set the buttons color the the appropriate color 
         if (passColorPalette != null) {
             colorButton.style.backgroundColor = passColorPalette.colors[i].getRGB();
         } else {
             colorButton.style.backgroundColor = "rgb(255, 255, 255)";
         }
 
-        colorPaletteGrid.appendChild(colorButton);
+        colorButtonBitLabel.innerHTML = colorPalette2BitStrings[i];
+
+        colorButtonHolder.appendChild(colorButton);
+        colorButtonHolder.appendChild(colorButtonBitLabel);
+        
+        colorPaletteGrid.appendChild(colorButtonHolder);
     }
 
     //Adds the children to the Color Palette Box <div> 
-    colorPaletteBox.appendChild(colorPaletteBoxTitle);
+    colorPaletteBox.appendChild(colorPaletteBoxHeadHolder);
     colorPaletteBox.appendChild(colorPaletteGrid);
     colorPaletteBox.setAttribute("draggable", "true");
 
@@ -135,8 +158,8 @@ function constructColorPaletteBox(passColorPalette = null) {
 //  Adds a tile to the working project and a tile button to boot
 function addTile() {
     if(workingProject != null) {
-        workingProject.projectTiles.push(new tile);
-        console.log(workingProject.projectTiles);
+        workingProject.projectArt.push(new tile);
+        console.log(workingProject.projectArt);
 
         art_grid.append(constructArtBox());
     }
@@ -154,28 +177,8 @@ function constructArtBox(passTile = null) {
     newArtBoxCanvas.setAttribute("width", 32);
     newArtBoxCanvas.setAttribute("height", 32);
 
-    var newArtPaletteColorHolder = document.createElement("div");
-    newArtPaletteColorHolder.classList.add("art-palette-color-holder");
-
-    var newArtPaletteColorBox0 = document.createElement("div");
-    newArtPaletteColorBox0.classList.add("art-palette-color-box");
-
-    var newArtPaletteColorBox1 = document.createElement("div");
-    newArtPaletteColorBox1.classList.add("art-palette-color-box");
-
-    var newArtPaletteColorBox2 = document.createElement("div");
-    newArtPaletteColorBox2.classList.add("art-palette-color-box");
-
-    var newArtPaletteColorBox3 = document.createElement("div");
-    newArtPaletteColorBox3.classList.add("art-palette-color-box");
-
     //Appending to combine the elements into one element tree 
     newArtBox.append(newArtBoxCanvas);
-    newArtBox.append(newArtPaletteColorHolder);
-    newArtPaletteColorHolder.append(newArtPaletteColorBox0);
-    newArtPaletteColorHolder.append(newArtPaletteColorBox1);
-    newArtPaletteColorHolder.append(newArtPaletteColorBox2);
-    newArtPaletteColorHolder.append(newArtPaletteColorBox3);
 
     if(passTile != null) {
 
@@ -196,16 +199,6 @@ function nesColorPopulation() {
     });
 }
 
-function gameBoyColorPopulation() {
-    gbColors.forEach(element => {
-        var gbColorSquare = document.createElement("button");
-        gbColorSquare.style.backgroundColor = element.getRGB();
-        gbColorSquare.style.borderColor = element.getRGB();
-        gbColorSquare.classList.add("color-picker-button");
-        $("#gb-color-picker").children(".color-picker-button-grid").append(gbColorSquare);
-    });
-}
-
 /*
 *   (Function) 
 *   Constructs the workingProject from the specifications of the new project dialog 
@@ -217,15 +210,6 @@ function createProject() {
     switch (console_select.selectedIndex) {
         case 1:
             tempProjectConsole = consoleList[0];
-            break;
-        case 2:
-            tempProjectConsole = consoleList[1];
-            break;
-        case 3:
-            tempProjectConsole = consoleList[2];
-            break;
-        case 4:
-            tempProjectConsole = consoleList[3];
             break;
         default:
             console.error("What how did you get here? No console is selected.")
@@ -314,6 +298,8 @@ function plotPixel() {
     console.log(paintLeft);
     console.log(paintTop);
 
+    workingProject.projectArt[workingArtIndex].tileBits[mousePixelX][mousePixelY] = bitBrush;
+
     var drawing = pixel_canvas.getContext("2d");
     drawing.lineWidth = 1;
     drawing.fillStyle = chosenColor.getRGB();
@@ -321,15 +307,9 @@ function plotPixel() {
 
 }
 
-function saveDrawingToProject() {
-    var data = pixel_canvas.toDataURL();
-
-    workingProject.projectTiles[workingTileIndex].imageData = data;
-}
-
 //  (Function)
 //  Sets the width and height of the pixel_canvas and the pixel_guide 
-function renderPixelCanvas(imageURL = null) {
+function renderPixelCanvas(artIndex) {
     pixel_canvas.setAttribute("width", (pixelSizeSkew * pixelArtWidth).toString() + "px");
     pixel_canvas.setAttribute("height", (pixelSizeSkew * pixelArtHeight).toString() + "px");
 
@@ -339,17 +319,25 @@ function renderPixelCanvas(imageURL = null) {
     pixel_canvas.style.display = "block";
     pixel_guide.css("display", "block");
 
-    drawPixelCanvasImage(imageURL);
+    drawPixelCanvasImage(artIndex);
 }
 
 // (Function)
 //  
-function drawPixelCanvasImage(imageURL) {
+function drawPixelCanvasImage(artIndex) {
     var drawing = pixel_canvas.getContext("2d");
-    var img = new Image;
-    img.src = imageURL;
+    
+    for(var i = 0; i < 8; i++) {    //Bad Programming, but every tile is 8x8 so this works 
+        for(var j = 0; j < 8; j++) {
+            var bitValue = colorPalette2BitStrings.findIndex(x => x == workingProject.projectArt[artIndex].tileBits[j][i]);
+            var workingPalette = workingProject.projectArt[artIndex].tilePaletteID;
+            var color = workingProject.projectColorPalettes[workingPalette].colors[bitValue].getRGB();
 
-    drawing.drawImage(img, 0, 0);
+            drawing.lineWidth = 1;
+            drawing.fillStyle = color;
+            drawing.fillRect(pixelSizeSkew * j, pixelSizeSkew * i, pixelSizeSkew, pixelSizeSkew);
+        }
+    }
 }
 
 //  (Function)
@@ -371,21 +359,8 @@ function openColorPicker(button) {
             $("#nes-color-picker").css("top", colorPickerTop);
             $("#nes-color-picker").css("display", "block");
             break;
-        case "SNES":
-            break;
-        case "Game Boy":
-            $("#gb-color-picker").css("left", colorPickerLeft);
-            $("#gb-color-picker").css("top", colorPickerTop);
-            $("#gb-color-picker").css("display", "block");
-            break;
-        case "Game Boy Color":
-            break;
     }
 
-}
-
-function testFunction() {
-    alert("Guess What!");
 }
 
 /*
@@ -424,7 +399,6 @@ canvas_holder.on("mousemove", e => {
 //  Draws a pixel to canvas when clicked 
 canvas_holder.on("click", function () {
     plotPixel();
-    saveDrawingToProject();
 })
 
 //  (Event Handler)
@@ -451,6 +425,8 @@ $("#color-palette-holder").on("change", ".color-palette-name", function () {
 //  (Event Handler)
 //  .color-buttons LMB 
 $("#color-palette-holder").on("click", ".color-button", function () {
+    var colorIndex = $(this).parent().index();
+    bitBrush = colorPalette2BitStrings[colorIndex];
     setChosenColor(this);
 })
 
@@ -478,6 +454,14 @@ $(window).on("click", function (event) {
 $(".color-picker").on("click", ".color-picker-button", function () {
     var newColor = $(this).css("background-color");
     var choosingButton = $(".choosing-button");
+    var colorIndex = choosingButton.parent().index();
+    var paletteIndex = choosingButton.parent().parent().parent().index();
+    workingProject.projectColorPalettes[paletteIndex].colors[colorIndex].setColorByRGB(newColor);
+
+    if(workingArtIndex != null) {
+        renderPixelCanvas(workingArtIndex);
+    }
+    
     
     choosingButton.css("background-color", newColor);
 })
@@ -486,8 +470,8 @@ $(".color-picker").on("click", ".color-picker-button", function () {
 //  Sets the pixel grid and the workingTile to tile associated with the tile-button 
 $("#art-grid").on("click", ".art-box", function() {
     console.log($(this).index());
-    workingTileIndex = $(this).index();
-    renderPixelCanvas(workingProject.projectTiles[workingTileIndex].imageData);
+    workingArtIndex = $(this).index();
+    renderPixelCanvas(workingArtIndex);
 })
 
 /*
