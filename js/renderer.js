@@ -3,8 +3,8 @@ const electron = require('electron');
 const path = require('path');
 const fs = require('fs');
 window.$ = window.jQuery = require('jquery');
-const {project, tile, art, color, colorPalette, gameConsole} = require('./js/classes.js');
-const {consoleList, nesColors, gbColors} = require('./js/data.js');
+const { project, tile, art, color, colorPalette, gameConsole } = require('./js/classes.js');
+const { consoleList, nesColors, gbColors } = require('./js/data.js');
 
 //Const Definitions 
 const dialog = electron.remote.dialog;
@@ -78,11 +78,14 @@ function closeHeader() {
 */
 function addColorPalette() {
     if (workingProject != null) {
-        workingProject.projectColorPalettes.push(new colorPalette);
-        var index = workingProject.projectColorPalettes.length - 1;
-        //console.log(workingProject.projectColorPalettes);
+        var tempPalette = new colorPalette();
+        tempPalette.colors[0].setColorByRGB(nesColors[48].getRGB());
+        tempPalette.colors[1].setColorByRGB(nesColors[48].getRGB());
+        tempPalette.colors[2].setColorByRGB(nesColors[48].getRGB());
+        tempPalette.colors[3].setColorByRGB(nesColors[48].getRGB());
 
-        color_palette_holder.append(constructColorPaletteBox());
+        color_palette_holder.append(constructColorPaletteBox(tempPalette));
+        workingProject.projectColorPalettes.push(tempPalette);
     }
 
 }
@@ -103,7 +106,7 @@ function constructColorPaletteBox(passColorPalette = null) {
     var colorPaletteBoxTitle = document.createElement("input");
     colorPaletteBoxTitle.classList.add("color-palette-name");
     colorPaletteBoxTitle.type = "text";
-    colorPaletteBoxTitle.placeholder = "Palette #";
+    colorPaletteBoxTitle.placeholder = "Palette #" + workingProject.projectColorPalettes.length;
 
     var colorPaletteCheckBox = document.createElement("input");
     colorPaletteCheckBox.classList.add("color-palette-check-box");
@@ -141,7 +144,7 @@ function constructColorPaletteBox(passColorPalette = null) {
 
         colorButtonHolder.appendChild(colorButton);
         colorButtonHolder.appendChild(colorButtonBitLabel);
-        
+
         colorPaletteGrid.appendChild(colorButtonHolder);
     }
 
@@ -157,7 +160,7 @@ function constructColorPaletteBox(passColorPalette = null) {
 //  (Function)
 //  Adds a tile to the working project and a tile button to boot
 function addTile() {
-    if(workingProject != null) {
+    if (workingProject != null) {
         workingProject.projectArt.push(new tile);
         console.log(workingProject.projectArt);
 
@@ -180,7 +183,7 @@ function constructArtBox(passTile = null) {
     //Appending to combine the elements into one element tree 
     newArtBox.append(newArtBoxCanvas);
 
-    if(passTile != null) {
+    if (passTile != null) {
 
     } else {
 
@@ -326,9 +329,9 @@ function renderPixelCanvas(artIndex) {
 //  
 function drawPixelCanvasImage(artIndex) {
     var drawing = pixel_canvas.getContext("2d");
-    
-    for(var i = 0; i < 8; i++) {    //Bad Programming, but every tile is 8x8 so this works 
-        for(var j = 0; j < 8; j++) {
+
+    for (var i = 0; i < 8; i++) {    //Bad Programming, but every tile is 8x8 so this works 
+        for (var j = 0; j < 8; j++) {
             var bitValue = colorPalette2BitStrings.findIndex(x => x == workingProject.projectArt[artIndex].tileBits[j][i]);
             var workingPalette = workingProject.projectArt[artIndex].tilePaletteID;
             var color = workingProject.projectColorPalettes[workingPalette].colors[bitValue].getRGB();
@@ -360,6 +363,19 @@ function openColorPicker(button) {
             $("#nes-color-picker").css("display", "block");
             break;
     }
+
+}
+
+
+function setPaletteCheck() {
+    var pIndex = workingProject.projectArt[workingArtIndex].tilePaletteID;
+
+    $(".color-palette-check-box").eq(pIndex).prop("checked", true);
+
+    $(".color-palette-check-box").not($(".color-palette-check-box").eq(pIndex)).prop("checked", false);
+}
+
+function exportTileBin() {
 
 }
 
@@ -439,6 +455,17 @@ $("#color-palette-holder").on("contextmenu", ".color-button", function () {
 })
 
 //  (Event Handler)
+//  Sets the selected tiles palette when the checkbox is clicked 
+$("#color-palette-holder").on("click", ".color-palette-check-box", function () {
+    var paletteIndex = $(this).parent().parent().index();
+    workingProject.projectArt[workingArtIndex].tilePaletteID = paletteIndex;
+
+    $(".color-palette-check-box").not(this).prop("checked", false);
+
+    drawPixelCanvasImage(workingArtIndex);
+})
+
+//  (Event Handler)
 //  Closes the color picker when you click outside of it 
 $(window).on("click", function (event) {
     var $target = $(event.target);
@@ -458,19 +485,20 @@ $(".color-picker").on("click", ".color-picker-button", function () {
     var paletteIndex = choosingButton.parent().parent().parent().index();
     workingProject.projectColorPalettes[paletteIndex].colors[colorIndex].setColorByRGB(newColor);
 
-    if(workingArtIndex != null) {
+    if (workingArtIndex != null) {
         renderPixelCanvas(workingArtIndex);
     }
-    
-    
+
+
     choosingButton.css("background-color", newColor);
 })
 
 //  (Event Handler)
 //  Sets the pixel grid and the workingTile to tile associated with the tile-button 
-$("#art-grid").on("click", ".art-box", function() {
+$("#art-grid").on("click", ".art-box", function () {
     console.log($(this).index());
     workingArtIndex = $(this).index();
+    setPaletteCheck();
     renderPixelCanvas(workingArtIndex);
 })
 
@@ -479,16 +507,20 @@ $("#art-grid").on("click", ".art-box", function() {
 */
 electron.ipcRenderer.on("new-project", function () {
     openNewHeader();
-}) 
-
-electron.ipcRenderer.on("open-project", function() {
-    
 })
 
-electron.ipcRenderer.on("save-project", function() {
+electron.ipcRenderer.on("open-project", function () {
+
+})
+
+electron.ipcRenderer.on("save-project", function () {
     initiateSave();
 })
 
-electron.ipcRenderer.on("print-working-project", function() {
+electron.ipcRenderer.on("print-working-project", function () {
     console.log(workingProject);
+})
+
+electron.ipcRenderer.on("export-project", function () {
+    exportTileBin();
 })

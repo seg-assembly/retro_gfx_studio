@@ -21,7 +21,7 @@
     background-color: burlywood;
     width: auto;
     height: 100px;
-    display: flex;
+    display: block;
 }
 
 .art-box:hover { 
