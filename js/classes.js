@@ -46,13 +46,15 @@ class color {
     red;
     green;
     blue;
+    exportCode;
     rgbColorString;
 
-    constructor(colorID = null, red = null, green = null, blue = null) {
+    constructor(colorID = null, red = null, green = null, blue = null, exportCode = null) {
         this.colorID = colorID;
         this.red = red;
         this.green = green;
         this.blue = blue;
+        this.exportCode = exportCode;
         this.setColorString();
     }
 

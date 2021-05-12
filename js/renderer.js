@@ -46,6 +46,7 @@ var workingProject;
 var workingDirectory;
 var workingArtIndex = null;
 var bitBrush = null;
+var exportDirectory;
 
 /*
     Init 
@@ -76,13 +77,21 @@ function closeHeader() {
 *   (Function)
 *   Adds a Color Palette to the Working Project and creates a Color Palette Box to go with it 
 */
-function addColorPalette() {
+function addColorPalette(passPalette = null) {
     if (workingProject != null) {
         var tempPalette = new colorPalette();
-        tempPalette.colors[0].setColorByRGB(nesColors[48].getRGB());
-        tempPalette.colors[1].setColorByRGB(nesColors[48].getRGB());
-        tempPalette.colors[2].setColorByRGB(nesColors[48].getRGB());
-        tempPalette.colors[3].setColorByRGB(nesColors[48].getRGB());
+        if (passPalette == null) {
+            Object.assign(tempPalette.colors[0], nesColors[48]);
+            Object.assign(tempPalette.colors[1], nesColors[48]);
+            Object.assign(tempPalette.colors[2], nesColors[48]);
+            Object.assign(tempPalette.colors[3], nesColors[48]);
+        } else {
+            tempPalette.colors[0] = passPalette[0];
+            tempPalette.colors[1] = passPalette[1];
+            tempPalette.colors[2] = passPalette[2];
+            tempPalette.colors[3] = passPalette[3];
+        }
+
 
         color_palette_holder.append(constructColorPaletteBox(tempPalette));
         workingProject.projectColorPalettes.push(tempPalette);
@@ -224,6 +233,7 @@ function createProject() {
     closeHeader();
     workingProject = tempProject;
     workingDirectory = null;
+    addColorPalette();
     trifold_holder.css("pointerEvents", "all");
     console.log(workingProject);
 }
@@ -297,9 +307,6 @@ function loadProject() {
 function plotPixel() {
     var paintLeft = mousePixelX * pixelSizeSkew;
     var paintTop = mousePixelY * pixelSizeSkew;
-
-    console.log(paintLeft);
-    console.log(paintTop);
 
     workingProject.projectArt[workingArtIndex].tileBits[mousePixelX][mousePixelY] = bitBrush;
 
@@ -375,8 +382,53 @@ function setPaletteCheck() {
     $(".color-palette-check-box").not($(".color-palette-check-box").eq(pIndex)).prop("checked", false);
 }
 
-function exportTileBin() {
+function exportProject() {
+    dialog.showOpenDialog({
+        title: "Export tiles/palettes where...",
+        defaultPath: __dirname,
+        buttonLabel: "Export",
+        properties: [
+            'createDirectory',
+            'openDirectory'
+        ]
+    }).then(result => {
+        exportDirectory = path.join(result.filePaths[0]);
+        var tileBin = exportTileBin();
+        var paletteBin = exportPaletteBin();
+        fs.writeFileSync(path.join(exportDirectory, workingProject.name + "_tiles.asm"), tileBin);
+        fs.writeFileSync(path.join(exportDirectory, workingProject.name + "_palettes.asm"), paletteBin);
+    })
+}
 
+
+function exportTileBin() {
+    if (workingProject != null) {
+        var fullBitString = "";
+        workingProject.projectArt.forEach(element => {
+
+            for (var i = 0; i < 8; i++) {    //Bad Programming, but every tile is 8x8 so this works 
+                for (var j = 0; j < 8; j++) {
+                    var bitValue = element.tileBits[j][i];
+                    fullBitString += bitValue.toString();
+                }
+            }
+        });
+
+        return fullBitString;
+    }
+}
+
+function exportPaletteBin() {
+    if (workingProject != null) {
+        var fullPaletteString = "";
+        workingProject.projectColorPalettes.forEach(element => {
+            element.colors.forEach(element => {
+                fullPaletteString += element.exportCode;
+            });
+        });
+
+        return fullPaletteString;
+    }
 }
 
 /*
@@ -433,9 +485,9 @@ $("#create-project-button").on("click", function () {
 //  Updates the color palette name in the project when changed on the GUI 
 $("#color-palette-holder").on("change", ".color-palette-name", function () {
     var paletteIndex = $(".color-palette-name").index(this);
-    console.log("paletteIndex = " + paletteIndex);
+    //console.log("paletteIndex = " + paletteIndex);
     workingProject.projectColorPalettes[paletteIndex].name = $(this).val().toString();
-    console.log("paletteName = " + $(this).val());
+    //console.log("paletteName = " + $(this).val());
 })
 
 //  (Event Handler)
@@ -484,6 +536,7 @@ $(".color-picker").on("click", ".color-picker-button", function () {
     var colorIndex = choosingButton.parent().index();
     var paletteIndex = choosingButton.parent().parent().parent().index();
     workingProject.projectColorPalettes[paletteIndex].colors[colorIndex].setColorByRGB(newColor);
+    workingProject.projectColorPalettes[paletteIndex].colors[colorIndex].exportCode = nesColors[$(this).index()].exportCode;
 
     if (workingArtIndex != null) {
         renderPixelCanvas(workingArtIndex);
@@ -522,5 +575,5 @@ electron.ipcRenderer.on("print-working-project", function () {
 })
 
 electron.ipcRenderer.on("export-project", function () {
-    exportTileBin();
+    exportProject();
 })
