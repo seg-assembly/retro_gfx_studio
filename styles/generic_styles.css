@@ -2,28 +2,32 @@
   Element Styles 
 */
 :root {
-    --pixel-size-skew: 24px;
-    --pixel-guide-size: calc(var(--pixel-size-skew) - 2px);
-    --pixel-art-height: 8;
-    --pixel-art-width: 8;
-  }
-  
-  body {
-    height: max-content;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  --pixel-size-skew: 24px;
+  --pixel-guide-size: calc(var(--pixel-size-skew) - 2px);
+  --pixel-art-height: 8;
+  --pixel-art-width: 8;
+}
+
+body {
+  height: max-content;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+p {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 /*
 Class Styles
   */
 .header-bar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
 }
 
 .centered {

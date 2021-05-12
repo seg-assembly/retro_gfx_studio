@@ -63,7 +63,10 @@ const menuTemplate = [
       },
       {
         label: "Export Project",
-        accelerator: "Shift+CommandOrControl+E"
+        accelerator: "Shift+CommandOrControl+E",
+        click: (item, focusedWindow) => {
+          focusedWindow.webContents.send("export-project");
+        }
       }
     ]
   },

@@ -1,17 +1,43 @@
+const emptyBitMap = [
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+]
+
 class project {
     constructor(name, projectConsole) {
         this.name = name;
         this.projectConsole = projectConsole;
         this.projectColorPalettes = [];
-        this.projectTiles = [];
+        this.projectArt = [];
     }
 }
 
 class tile {
-    imageData;
-    tilePaletteID;
+    tilePaletteID = 0;
+    tileBits = [["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"],
+    ["00","00","00","00","00","00","00","00"]];
 
     constructor() {
+    }
+}
+
+class art {
+    tiles = [[]];
+
+    constructor() {
+
     }
 }
 
@@ -65,7 +91,7 @@ class colorPalette {
 
     constructor() {
         this.name;
-        this.colors = [];
+        this.colors = [new color(), new color(), new color(), new color()];
     }
 }
 
@@ -82,6 +108,7 @@ class gameConsole {
 module.exports = {
     project,
     tile,
+    art,
     color,
     colorPalette,
     gameConsole
