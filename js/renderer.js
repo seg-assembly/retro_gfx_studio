@@ -42,7 +42,7 @@ var canvasHolderTop;
 var pixelGuideLeftPosition;
 var pixelGuideTopPosition;
 var chosenColor;
-var workingProject;
+var workingProject = new project();
 var workingDirectory;
 var workingArtIndex = null;
 var bitBrush = null;
@@ -115,7 +115,10 @@ function constructColorPaletteBox(passColorPalette = null) {
     var colorPaletteBoxTitle = document.createElement("input");
     colorPaletteBoxTitle.classList.add("color-palette-name");
     colorPaletteBoxTitle.type = "text";
-    colorPaletteBoxTitle.placeholder = "Palette #" + workingProject.projectColorPalettes.length;
+    colorPaletteBoxTitle.placeholder = "New Palette";
+    if(passColorPalette != null && passColorPalette.name != undefined) {
+        colorPaletteBoxTitle.value = passColorPalette.name;
+    }
 
     var colorPaletteCheckBox = document.createElement("input");
     colorPaletteCheckBox.classList.add("color-palette-check-box");
@@ -144,7 +147,7 @@ function constructColorPaletteBox(passColorPalette = null) {
 
         //If a color is passed in (i.e. a project was opened), it would set the buttons color the the appropriate color 
         if (passColorPalette != null) {
-            colorButton.style.backgroundColor = passColorPalette.colors[i].getRGB();
+            colorButton.style.backgroundColor = passColorPalette.colors[i].rgbColorString;
         } else {
             colorButton.style.backgroundColor = "rgb(255, 255, 255)";
         }
@@ -293,13 +296,41 @@ function saveProject() {
 //  (Function)
 //  
 function openProject() {
-
+    dialog.showOpenDialog({
+        title: "Open project...",
+        defaultPath: __dirname,
+        buttonLabel: "Open",
+        filters: [{
+            name: "Retro Graphics Studio Projects",
+            extensions: [".rgsproj"]
+        }],
+        properties: [
+            'openFile'
+        ]
+    }).then(result => {
+        workingDirectory = (result.filePaths[0].replace(path.basename(result.filePaths[0]), ""));
+        var openTempString = fs.readFileSync(result.filePaths[0]).toString();
+        var openTempProject = new project();
+        openTempProject = JSON.parse(openTempString);
+        loadProject(openTempProject);
+    })
 }
 
 //  (Function)
 //  
-function loadProject() {
+function loadProject(openedProject) {
+    Object.assign(workingProject, openedProject);
+    console.log(workingProject);
 
+    for(var i = 0; i < workingProject.projectColorPalettes.length; i++) {
+        color_palette_holder.append(constructColorPaletteBox(workingProject.projectColorPalettes[i]));
+    }
+
+    for(var i = 0; i < workingProject.projectArt.length; i++) {
+        art_grid.append(constructArtBox());
+    }
+
+    trifold_holder.css("pointerEvents", "all");
 }
 
 //  (Function)
@@ -312,7 +343,7 @@ function plotPixel() {
 
     var drawing = pixel_canvas.getContext("2d");
     drawing.lineWidth = 1;
-    drawing.fillStyle = chosenColor.getRGB();
+    drawing.fillStyle = chosenColor.rgbColorString
     drawing.fillRect(paintLeft, paintTop, pixelSizeSkew, pixelSizeSkew);
 
 }
@@ -341,7 +372,7 @@ function drawPixelCanvasImage(artIndex) {
         for (var j = 0; j < 8; j++) {
             var bitValue = colorPalette2BitStrings.findIndex(x => x == workingProject.projectArt[artIndex].tileBits[j][i]);
             var workingPalette = workingProject.projectArt[artIndex].tilePaletteID;
-            var color = workingProject.projectColorPalettes[workingPalette].colors[bitValue].getRGB();
+            var color = workingProject.projectColorPalettes[workingPalette].colors[bitValue].rgbColorString;
 
             drawing.lineWidth = 1;
             drawing.fillStyle = color;
@@ -563,7 +594,7 @@ electron.ipcRenderer.on("new-project", function () {
 })
 
 electron.ipcRenderer.on("open-project", function () {
-
+    openProject();
 })
 
 electron.ipcRenderer.on("save-project", function () {

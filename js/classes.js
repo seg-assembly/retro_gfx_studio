@@ -88,7 +88,7 @@ class color {
 }
 
 class colorPalette {
-    name;
+    name = "";
     colors;
 
     constructor() {
