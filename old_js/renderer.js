@@ -3,8 +3,8 @@ const electron = require('electron');
 const path = require('path');
 const fs = require('fs');
 window.$ = window.jQuery = require('jquery');
-const { project, tile, art, color, colorPalette, gameConsole } = require('./js/classes.js');
-const { consoleList, nesColors, gbColors } = require('./js/data.js');
+const { project, tile, art, color, colorPalette, gameConsole } = require('./js/classes.js.js');
+const { consoleList, nesColors, gbColors } = require('./js/data.js.js');
 
 //Const Definitions 
 const dialog = electron.remote.dialog;
