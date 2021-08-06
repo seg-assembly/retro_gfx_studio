@@ -1,6 +1,4 @@
 # retro_gfx_studio
-This is the web prototype of Retro Graphics Studio, the end product will be packaged for the desktop with electron. 
+This is the Electron prototype of Retro Graphics Studio made as my Senior Capstone Project.
 
-This is an application for creating graphics specifically for Retro Homebrew. 
-
-A more formal description will be added soon. 
+This is an application for creating graphics specifically for Retro Homebrew, and supports NES tiles and palettes in the prototype implementation. 
